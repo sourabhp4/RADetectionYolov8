@@ -1,0 +1,45 @@
+header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 5rem;
+    z-index: 2;
+    backdrop-filter: blur(5px);
+    background: rgb(0, 126, 24);
+    background: linear-gradient(90deg, rgba(0, 126, 24, 1) 0%, rgba(161, 255, 165, 1) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    margin: 0 2rem;
+}
+
+.header-links {
+    margin: 0 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.header-getStarted {
+    padding: 0.5rem;
+    border-radius: 10px;
+    transition: all;
+    transition-duration: 200ms;
+    background-color: #076C08;
+}
+
+.header-getStarted:hover {
+    transform: scale(1.1);
+    transition: all;
+    transition-duration: 200ms;
+}

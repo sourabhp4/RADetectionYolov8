@@ -1,0 +1,97 @@
+<div class="form">
+    <h2>FILL THE DETAILS</h2>
+    <form>
+        <h3>Joint-Detection</h3>
+        <p>Upload the x-ray image file *</p>
+        <div class="form-content-image">
+            <input type="file" id="image" name="image" accept="image/*" (input)="dataInputObj.passImageFile($event)">
+            <label for="image">
+                <div class="form-content-image-box">
+                    <span class="form-content-image-box-drop-file"> Drop image file here </span>
+                    <span class="form-content-image-box-or"> Or </span>
+                    <span class="form-content-image-box-browse"> Browse </span>
+                </div>
+            </label>
+        </div>
+
+        <h3>Serology</h3>
+
+        <div class="form-content">
+            <label for="age" class="form-label">Patient's age</label>
+            <input type="number" id="age" name="age" [(ngModel)]="dataInputObj.age">
+        </div>
+
+        <div class="form-content">
+            <label for="gender" class="form-label">Patient's gender</label>
+            <select name="gender" id="gender" (change)="dataInputObj.passGender($event)">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+
+        <div class="form-content">
+            <label for="affectDuration" class="form-label">Duration of Symptoms</label>
+            <input type="number" id="affectDuration" name="affectDuration" [(ngModel)]="dataInputObj.affectDuration">
+            <small>In Weeks</small>
+        </div>
+
+        <div class="form-content">
+            <input type="checkbox" id="anticcp" name="anticcp" value="anticcp"
+                (change)="dataInputObj.passType('anticcp')">
+            <label for="anticcp" class="form-label">Anti-CCP</label>
+            <label for="anticcpValue" class="form-label">Enter the value in EU/mL</label>
+            <input type="number" id="anticcpValue" name="anticcpValue" [(ngModel)]="dataInputObj.anticcpValue">
+        </div>
+
+        <div class="form-content">
+            <input type="checkbox" id="rf" name="rf" value="rf" (change)="dataInputObj.passType('rf')">
+            <label for="rf" class="form-label">Rheumotoid Factor</label>
+            <label for="rfValue" class="form-label">Enter the value in EU/mL</label>
+            <input type="number" id="rfValue" name="rfValue" [(ngModel)]="dataInputObj.rfValue">
+        </div>
+
+        <div class="form-content">
+            <input type="checkbox" id="esr" name="esr" value="esr" (change)="dataInputObj.passType('esr')">
+            <label for="esr" class="form-label">Erythrocyte Sedimentation Rate</label>
+            <label for="esrValue" class="form-label">Enter the value in EU/mL</label>
+            <input type="number" id="esrValue" name="esrValue" [(ngModel)]="dataInputObj.esrValue">
+        </div>
+
+        <div class="form-content">
+            <input type="checkbox" id="crp" name="crp" value="crp" (change)="dataInputObj.passType('crp')">
+            <label for="crp" class="form-label">C-Reactive Protein</label>
+            <label for="crpValue" class="form-label">Enter the value in EU/mL</label>
+            <input type="number" id="crpValue" name="crpValue" [(ngModel)]="dataInputObj.crpValue">
+        </div>
+
+        <button class="form-submit" (click)="onSubmit($event)">SUBMIT</button>
+    </form>
+</div>
+
+<div class="summary">
+    <h2>SUMMARY</h2>
+    <div class="image-output-container">
+        <div id="imageCanvas"></div>
+        <div class="image-canvas-output" *ngIf="isImageOutputAvailable">
+            <div class="select-rect-type">
+                <label for="rectType">Select the Type:</label>
+                <select name="rectType" id="rectType" (change)="getRectType($event)">
+                    <option value="both">Both</option>
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                </select>
+            </div>
+            <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class name</h3>
+            <div *ngIf=" currentImageClass !== '' ">
+                <p>Class: <b>{{ currentImageClass }}</b></p>
+                <p>Confidence: <b>{{ currentImageClassConf }}</b></p>
+            </div>
+            <br>
+            <h4>Note:</h4>
+            <p><span class="red-text">Red </span>Rectangular boxes shows RA <span class="red-text"> positive </span>
+                joints </p>
+            <p><span class="green-text">Green </span>Rectangular boxes shows RA <span class="green-text"> negative
+                </span> joints </p>
+        </div>
+    </div>
+</div>

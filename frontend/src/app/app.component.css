@@ -1,0 +1,10 @@
+.content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.space {
+    margin-top: 5rem;
+    flex: 1;
+}
