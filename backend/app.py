@@ -41,9 +41,7 @@ classes = { 0: "ldip50", 1: "ldip40", 2: "ldip30", 3: "ldip20",
 app = Flask(__name__)
 CORS(app)
 
-def process_image(imagePath):
-    # Read the image
-    image = cv2.imread(imagePath)
+def process_image(image):
 
     # Perform prediction
     results = model.predict(image, conf=0.1)
@@ -260,16 +258,13 @@ def predict():
 
         image_binary = base64.b64decode(imageUrl.split(",")[1])
 
-        save_directory = "images"
-        os.makedirs(save_directory, exist_ok=True)
+        image_array = np.frombuffer(image_binary, np.uint8)
 
-        # Save the image to a file
-        image_path = os.path.join(save_directory, imageName)
-        with open(image_path, "wb") as f:
-            f.write(image_binary)
-
+        # Read the image
+        image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+            
         # Process the image and get predictions
-        imagePredictions = process_image(image_path)
+        imagePredictions = process_image(image)
 
         if imagePredictions is None:
             return jsonify({"imageError": True})
