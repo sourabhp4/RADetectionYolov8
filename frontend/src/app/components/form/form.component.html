@@ -51,17 +51,17 @@
         </div>
 
         <div class="form-content">
-            <input type="checkbox" id="esr" name="esr" value="esr" (change)="dataInputObj.passType('esr')">
-            <label for="esr" class="form-label">Erythrocyte Sedimentation Rate</label>
-            <label for="esrValue" class="form-label">Enter the value in EU/mL</label>
-            <input type="number" id="esrValue" name="esrValue" [(ngModel)]="dataInputObj.esrValue">
-        </div>
-
-        <div class="form-content">
             <input type="checkbox" id="crp" name="crp" value="crp" (change)="dataInputObj.passType('crp')">
             <label for="crp" class="form-label">C-Reactive Protein</label>
             <label for="crpValue" class="form-label">Enter the value in EU/mL</label>
             <input type="number" id="crpValue" name="crpValue" [(ngModel)]="dataInputObj.crpValue">
+        </div>
+
+        <div class="form-content">
+            <input type="checkbox" id="esr" name="esr" value="esr" (change)="dataInputObj.passType('esr')">
+            <label for="esr" class="form-label">Erythrocyte Sedimentation Rate</label>
+            <label for="esrValue" class="form-label">Enter the value in EU/mL</label>
+            <input type="number" id="esrValue" name="esrValue" [(ngModel)]="dataInputObj.esrValue">
         </div>
 
         <button class="form-submit" (click)="onSubmit($event)">SUBMIT</button>
@@ -72,7 +72,7 @@
     <h2>SUMMARY</h2>
     <div class="image-output-container">
         <div id="imageCanvas"></div>
-        <div class="image-canvas-output" *ngIf="isImageOutputAvailable">
+        <div class="image-canvas-output" *ngIf="isOutputAvailable">
             <div class="select-rect-type">
                 <label for="rectType">Select the Type:</label>
                 <select name="rectType" id="rectType" (change)="getRectType($event)">
@@ -81,7 +81,8 @@
                     <option value="negative">Negative</option>
                 </select>
             </div>
-            <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class name</h3>
+            <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class
+                name</h3>
             <div *ngIf=" currentImageClass !== '' ">
                 <p>Class: <b>{{ currentImageClass }}</b></p>
                 <p>Confidence: <b>{{ currentImageClassConf }}</b></p>
@@ -92,6 +93,34 @@
                 joints </p>
             <p><span class="green-text">Green </span>Rectangular boxes shows RA <span class="green-text"> negative
                 </span> joints </p>
+        </div>
+    </div>
+
+    <div class="score-output-container" *ngIf="isOutputAvailable">
+        <div class="score-output">
+            <h3>About Joint-Detection</h3>
+            <p><b>Message: </b> {{ resultScore.category_1.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ resultScore.category_1.score }}</p>
+        </div>
+        <div class="score-output" *ngIf="dataInputObj.isAnticcpPresent || dataInputObj.isRfPresent">
+            <h3>About AntiCCP/RF values</h3>
+            <p><b>Message: </b> {{ resultScore.category_2.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ resultScore.category_2.score }}</p>
+        </div>
+        <div class="score-output" *ngIf="dataInputObj.isAnticcpPresent || dataInputObj.isRfPresent">
+            <h3>About CRP/ESR values</h3>
+            <p><b>Message: </b> {{ resultScore.category_3.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ resultScore.category_3.score }}</p>
+        </div>
+        <div class="score-output">
+            <h3>About Duration of Symptoms</h3>
+            <p><b>Message: </b> {{ resultScore.category_4.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ resultScore.category_4.score }}</p>
+        </div>
+        <div class="score-output">
+            <h3>Final Info</h3>
+            <p><b>Message: </b> {{ resultScore.output.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ resultScore.output.score }}</p>
         </div>
     </div>
 </div>

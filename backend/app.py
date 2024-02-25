@@ -37,6 +37,46 @@ classes = { 0: "ldip50", 1: "ldip40", 2: "ldip30", 3: "ldip20",
             54: "rmcp51", 55: "rmcp41", 56: "rmcp31", 57: "rmcp21", 58: "rmcp11",
             59: "rcrpls1" }
 
+# Scores
+scores = {
+    'category_1': {
+        '0_small': 0,
+        '1-3_small': 2,
+        '4-10_small': 3,
+        '>10_small': 5,
+        '0_crpls': 0,
+        '1_crpls': 1,
+        '2_crpls':2
+    },
+    'category_2': {
+        'anticcp': {
+            'Negative': 0,
+            'Low-Positive': 2,
+            'Medium-Positive': 3,
+            'High-Positive': 4,
+        },
+        'rf': {
+            'Negative': 0,
+            'Positive': 3
+        }
+    },
+    'category_3': {
+        'crp': {
+            'Normal': 0,
+            'Abnormal': 1,
+        },
+        'esr': {
+            'Normal': 0,
+            'Abnormal': 1,
+        }
+    },
+    'category_4': {
+        '<_6Weeks': 0,
+        '>=_6Weeks': 1,
+    },
+    'final-threshold': 6
+}
+
 # Create the Flask app
 app = Flask(__name__)
 CORS(app)
@@ -159,23 +199,23 @@ def anticcp_node(value):
 
 def crp_node(value):
     if value <= 20:
-        return 0
+        return 5
     if value <= 39:
-        return 1
+        return 6
     if value <= 59:
-        return 2
+        return 6
     else:
-        return 3
+        return 6
 
 def esr_node(value):
     if value <= 20:
-        return 0
+        return 5
     if value <= 39:
-        return 1
+        return 6
     if value <= 59:
-        return 2
+        return 6
     else:
-        return 3
+        return 6
 
 def make_node_prediction(data_point, test_type):
     if test_type == 'rf':
@@ -194,7 +234,9 @@ def make_serology_prediction(dataObj):
         1: 'Low-Positive',
         2: 'Medium-Positive',
         3: 'High-Positive',
-        4: 'Positive'
+        4: 'Positive',
+        5: 'Normal',
+        6: 'Abnormal'
     }
     try:
         data_point = {
@@ -240,7 +282,129 @@ def make_durationPrediction(dataObj):
         print(f"Error processing serology data: {e}")
         return None
 
+def calculateCategory_1_Score(imagePredictions): 
 
+    smallJointsAffectedCount = 0
+    largeJointsAffectedCount = 0
+    for prediction in imagePredictions:
+        currentClass = prediction.get('class')
+        if currentClass[1:-1] == 'crpls':
+            if currentClass[-1] == '1':
+                largeJointsAffectedCount += 1
+            continue
+
+        if currentClass[-1] == '1':
+            smallJointsAffectedCount += 1
+
+    sumScore = 0
+    message = ''
+
+    if smallJointsAffectedCount == 0:
+        message = 'Small joints are healthy'
+        sumScore += scores.get('category_1').get('0_small')
+    elif smallJointsAffectedCount > 0 and smallJointsAffectedCount <= 3:
+        message = 'There are few small joints are affected by RA'
+        sumScore += scores.get('category_1').get('1-3_small')
+    elif smallJointsAffectedCount > 3 and smallJointsAffectedCount <= 10:
+        message = 'There are more than 3 small joints affected by RA'
+        sumScore += scores.get('category_1').get('4-10_small')
+    elif smallJointsAffectedCount > 10:
+        message = 'There are more than 10 small joints are affected by RA'
+        sumScore += scores.get('category_1').get('>10_small')
+    
+    if largeJointsAffectedCount == 0:
+        message += '\nLarge joints are healthy'
+        sumScore += scores.get('category_1').get('0_crpls')
+    elif largeJointsAffectedCount == 1:
+        message += '\nRA might have affected large joints'
+        sumScore += scores.get('category_1').get('1_crpls')
+    elif largeJointsAffectedCount == 2:
+        message += '\nRA has affected large joints'
+        sumScore += scores.get('category_1').get('2_crpls')
+
+    return { 'score': sumScore, 'message': message }
+
+def calculateCategory_2_Score(bloodPredictions):
+
+    sumScore = 0
+    message = ''
+
+    for prediction in bloodPredictions:
+        if prediction.get('type') == 'anticcp':
+            sumScore += scores['category_2']['anticcp'].get(prediction.get('status'))
+            message += f"Your Anit-CCP (Anti-Cyclic Citrullinated Peptide) test value shows as - {prediction.get('status')}\n"
+        if prediction.get('type') == 'rf':
+            sumScore += scores['category_2']['rf'].get(prediction.get('status'))
+            message += f"Your RF (Rheumatoid Factor) test value shows as - {prediction.get('status')}\n"
+
+    return { 'score': sumScore, 'message': message }
+
+def calculateCategory_3_Score(bloodPredictions):
+
+    sumScore = 0
+    message = ''
+
+    for prediction in bloodPredictions:
+        if prediction.get('type') == 'crp':
+            sumScore += scores['category_3']['crp'].get(prediction.get('status'))
+            message += f"Your CRP (C-Reactive Protein) test value shows as - {prediction.get('status')}\n"
+        if prediction.get('type') == 'esr':
+            sumScore += scores['category_3']['esr'].get(prediction.get('status'))
+            message += f"Your ESR (Erythrocyte Sedimentation Rate) test value shows as - {prediction.get('status')}\n"
+
+    return { 'score': sumScore, 'message': message }
+
+def calculateCategory_4_Score (durationPrediction):
+    score = 0
+    message = ''
+
+    if durationPrediction == 0:
+        score += scores['category_4'].get('<_6Weeks')
+        message += 'Based on the duration of symptoms, probability of having RA is less'
+    elif durationPrediction == 1:
+        score += scores['category_4'].get('>=_6Weeks')
+        message += 'Based on the duration of symptoms, probability of having RA is more'
+
+    return { 'score': score, 'message': message }
+
+def calculateScore(imagePredictions, bloodPredictions, durationPredictions):
+    resultScore = {
+        'category_1': {
+            'score' : 0,
+            'message': ''
+        },
+        'category_2': {
+            'score' : 0,
+            'message': ''
+        },
+        'category_3': {
+            'score' : 0,
+            'message': ''
+        },
+        'category_4': {
+            'score' : 0,
+            'message': ''
+        },
+        'output': {
+            'score': 0,
+            'message': ''
+        }
+    }
+    
+    resultScore['category_1'] = calculateCategory_1_Score(imagePredictions)
+    resultScore['category_2'] = calculateCategory_2_Score(bloodPredictions)
+    resultScore['category_3'] = calculateCategory_3_Score(bloodPredictions)
+    resultScore['category_4'] = calculateCategory_4_Score(durationPredictions)
+
+    finalScore = resultScore['category_1']['score'] + resultScore['category_2']['score'] + resultScore['category_3']['score'] + resultScore['category_4']['score']
+    print(finalScore)
+    resultScore['output']['score'] = finalScore
+    if finalScore < scores.get('final-threshold'):
+        resultScore['output']['message'] = 'Low chance of patient being RA positive based on the supplied inputs'
+    else:
+        resultScore['output']['message'] = 'High chance of patient being RA positive based on the supplied inputs'
+
+    return resultScore
 
 @app.route('/', methods=["POST", "GET"])
 def home():
@@ -267,16 +431,21 @@ def predict():
         imagePredictions = process_image(image)
 
         if imagePredictions is None:
-            return jsonify({"imageError": True})
+            return jsonify({"error": 'image'})
         
         bloodPredictions = make_serology_prediction(request.json)
 
+        if bloodPredictions is None:
+            return jsonify({"error": 'blood'})
+
         durationPrediction = make_durationPrediction(request.json)
 
-        if bloodPredictions is None:
-            return jsonify({"bloodError": True, 'imagePredictions': imagePredictions})
+        if durationPrediction is None:
+            return jsonify({"error": 'duration'})
+        
+        resultScore = calculateScore(imagePredictions, bloodPredictions, durationPrediction)
 
-        return jsonify({"imagePredictions": imagePredictions, "bloodPredictions": bloodPredictions})
+        return jsonify({"imagePredictions": imagePredictions, "resultScore": resultScore})
 
     except Exception as e:
         print(f"Error handling prediction request: {e}")

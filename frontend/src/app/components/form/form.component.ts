@@ -15,21 +15,23 @@ import Konva from 'konva';
 export class FormComponent {
   dataInputObj: DataInput
 
-  isImageOutputAvailable = false
+  isOutputAvailable = false
   currentImageClass = ''
   currentImageClassConf = 0.0
   canvasRectType: 'both' | 'positive' | 'negative'
 
+
+  imagePredictions: DataOutputImagePrediction[] = []
+  resultScore: DataOutputScore
+
   constructor(private http: HttpClient) {
     this.dataInputObj = new DataInput()
     this.canvasRectType = 'both'
+    this.resultScore = new DataOutputScore()
   }
-  
-  imagePredictions: DataOutputImagePrediction[] = []
 
   onSubmit(event: any) {
     event.preventDefault()
-    console.log('hello')
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -46,10 +48,10 @@ export class FormComponent {
       } else if (res.bloodError) {
         console.log(res.imagePredictions, res.bloodError)
       } else {
-        this.isImageOutputAvailable = true
+        this.isOutputAvailable = true
         this.imagePredictions = res.imagePredictions
+        this.resultScore = res.resultScore
         this.onResult()
-        console.log(res.imagePredictions, res.bloodPredictions)
       }
     })
 
@@ -75,11 +77,11 @@ export class FormComponent {
         if (mouseX <= 30 || mouseX >= 670 || mouseY <= 30 || mouseY >= 670)
           this.currentImageClass = ''
         else {
-          this.imagePredictions.forEach( (prediction) => {
+          this.imagePredictions.forEach((prediction) => {
             // Check if mouseX is between x1 and x2, and mouseY is between y1 and y2
             if (mouseX >= prediction.x1 + 30 && mouseX <= prediction.x2 + 30 && mouseY >= prediction.y1 + 30 && mouseY <= prediction.y2 + 30) {
               // If mouse is inside the rectangle, return the class name
-              if( (this.canvasRectType === 'negative' && prediction.class.endsWith('1')) || (this.canvasRectType === 'positive' && prediction.class.endsWith('0')))
+              if ((this.canvasRectType === 'negative' && prediction.class.endsWith('1')) || (this.canvasRectType === 'positive' && prediction.class.endsWith('0')))
                 return
               this.currentImageClass = prediction.class
               this.currentImageClassConf = prediction.confidence
@@ -88,6 +90,8 @@ export class FormComponent {
         }
       }
     })
+
+    console.log(this.resultScore)
   }
 }
 
@@ -165,6 +169,37 @@ export class DataOutputImagePrediction {
     this.y1 = 0.0
     this.x2 = 0.0
     this.y2 = 0.0
+  }
+}
+
+export class DataOutputScore {
+  category_1: {
+    message: string
+    score: number
+  }
+  category_2: {
+    message: string
+    score: number
+  }
+  category_3: {
+    message: string
+    score: number
+  }
+  category_4: {
+    message: string
+    score: number
+  }
+  output: {
+    message: string
+    score: number
+  }
+
+  constructor() {
+    this.category_1 = { message: '', score: 0 }
+    this.category_2 = { message: '', score: 0 }
+    this.category_3 = { message: '', score: 0 }
+    this.category_4 = { message: '', score: 0 }
+    this.output = { message: '', score: 0 }
   }
 }
 

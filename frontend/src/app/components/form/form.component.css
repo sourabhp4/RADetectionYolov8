@@ -118,3 +118,17 @@ h3 {
     gap: 1rem;
     margin: 1rem 0;
 }
+
+.score-output-container {
+    padding: 1rem;
+    border: 2px solid gray;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.score-output-container h3,
+.score-output-container p {
+    width: 50%;
+    margin: 0.5rem 0;
+}
