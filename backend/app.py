@@ -416,7 +416,7 @@ def predict():
         image = request.json.get('image')
         imageName = image.get('name')
         imageUrl = image.get('photoUrl')
-
+        print(imageUrl)
         if imageName == '' or imageUrl == '' :
             return jsonify({"error": "No image uploaded"})
 

@@ -1,9 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [ CommonModule ],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
   images = [
@@ -17,16 +20,18 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('carousel') carousel!: ElementRef<HTMLDivElement>;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ngAfterViewInit() {
     this.slideWidth = this.carousel.nativeElement.clientWidth;
-    this.carousel.nativeElement.style.transform = `translateX(0px)`; // Set initial position to first slide
+    this.carousel.nativeElement.style.transform = `translateX(0px)`;
     this.startSlider();
   }
 
   ngOnDestroy() {
-    clearInterval(this.timer); // Clear the timer when component is destroyed
+    clearInterval(this.timer);
   }
 
   startSlider() {
