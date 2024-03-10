@@ -132,3 +132,16 @@ h3 {
     width: 50%;
     margin: 0.5rem 0;
 }
+
+.container {
+    height: 100vh; /* Set container height to fit the screen */
+}
+  
+  .form {
+    margin-top: 2rem; /* Add space between the sections */
+  }
+  
+  .form .card-body {
+    padding: 2rem; /* Add padding to the card body */
+  }
+
