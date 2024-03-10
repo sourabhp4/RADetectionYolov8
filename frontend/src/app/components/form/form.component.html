@@ -32,14 +32,12 @@
             <label class="input-group-text" for="image">Browse</label>
           </div>
 
-          <h3>Serology</h3>
+        <h3>Serology</h3>
 
-          <div class="row mb-3">
-            <label for="age" class="col-sm-3 col-form-label">Patient's age</label>
-            <div class="col-sm-9">
-              <input type="number" id="age" name="age" class="form-control" [(ngModel)]="dataInputObj.age">
-            </div>
-          </div>
+        <div class="form-content">
+            <label for="age" class="form-label">Patient's age</label>
+            <input type="number" id="age" name="age" [(ngModel)]="dataInputObj.age">
+        </div>
 
           <div class="row mb-3">
             <label for="gender" class="col-sm-3 col-form-label">Patient's gender</label>

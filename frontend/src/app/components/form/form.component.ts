@@ -19,7 +19,8 @@ export class FormComponent {
   currentImageClass = ''
   currentImageClassConf = 0.0
   canvasRectType: 'both' | 'positive' | 'negative'
-
+  konvaObject: any
+  scale = 1
 
   imagePredictions: DataOutputImagePrediction[] = []
   resultScore: DataOutputScore
@@ -54,7 +55,6 @@ export class FormComponent {
         this.onResult()
       }
     })
-
   }
 
   getRectType = (event: any) => {
@@ -66,10 +66,9 @@ export class FormComponent {
   }
 
   onResult = () => {
-    let konvaObject: Konva.Stage
-    konvaObject = drawPredictions(this.imagePredictions, this.dataInputObj.image.photoUrl, this.canvasRectType)
-    konvaObject.on('mousemove', () => {
-      let mousePos = konvaObject.getPointerPosition()
+    this.konvaObject = drawPredictions(this.imagePredictions, this.dataInputObj.image.photoUrl, this.canvasRectType)
+    this.konvaObject.on('mousemove', () => {
+      let mousePos = this.konvaObject.getPointerPosition()
       if (mousePos !== null) {
         let mouseX = mousePos.x
         let mouseY = mousePos.y
@@ -91,7 +90,38 @@ export class FormComponent {
       }
     })
 
-    console.log(this.resultScore)
+    // var scaleBy = 1.1
+    // this.konvaObject.on('wheel', (e: any) => {
+    //   // stop default scrolling
+    //   e.evt.preventDefault()
+
+    //   var oldScale = this.konvaObject.scaleX()
+    //   var pointer = this.konvaObject.getPointerPosition()
+
+    //   var mousePointTo = {
+    //     x: (pointer.x - this.konvaObject.x()) / oldScale,
+    //     y: (pointer.y - this.konvaObject.y()) / oldScale,
+    //   }
+
+    //   // how to scale? Zoom in? Or zoom out?
+    //   let direction = e.evt.deltaY > 0 ? 1 : -1
+
+    //   // when we zoom on trackpad, e.evt.ctrlKey is true
+    //   // in that case lets revert direction
+    //   if (e.evt.ctrlKey) {
+    //     direction = -direction
+    //   }
+
+    //   var newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy
+
+    //   this.konvaObject.scale({ x: newScale, y: newScale })
+
+    //   var newPos = {
+    //     x: pointer.x - mousePointTo.x * newScale,
+    //     y: pointer.y - mousePointTo.y * newScale,
+    //   }
+    //   this.konvaObject.position(newPos)
+    // })
   }
 }
 

@@ -426,9 +426,12 @@ def predict():
 
         # Read the image
         image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-            
+        
+        #Resize the image to 640x640
+        image_resized = cv2.resize(image, (640, 640))
+
         # Process the image and get predictions
-        imagePredictions = process_image(image)
+        imagePredictions = process_image(image_resized)
 
         if imagePredictions is None:
             return jsonify({"error": 'image'})
