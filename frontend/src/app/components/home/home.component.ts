@@ -10,8 +10,9 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent implements OnInit {
   images = [
-    { src: 'assets/slider1.png', title: 'Slider1' },
-    { src: 'assets/slider2.png', title: 'Slider2' }
+    { src: 'assets/slider11.png', title: '' },
+    { src: 'assets/slider2.png', title: '' },
+
   ];
 
   currentSlide = 0;
