@@ -6,23 +6,54 @@ h1 {
   margin-top: 2rem;
 }
 
-#about{
-    margin: 3rem auto 0 auto;
-    padding: 2rem;
-    height: 65vh; /* Adjust height as needed */
-    width: 70vw;
-    background-color: #f5f5f5;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  
+#about {
+  margin: 3rem auto 0 auto;
+  padding: 2rem;
+  max-width: 80vw; /* Adjusted max-width for better readability */
+  background-color: #f5f5f5;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
 }
+
 #vision {
   margin: 3rem auto 0 auto;
   padding: 2rem;
-  height: 75vh; /* Adjust height as needed */
-  width: 70vw;
+  max-width: 80vw; /* Adjusted max-width for better readability */
   background-color: #f5f5f5;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
 }
+
+#about h2,
+#vision h2 {
+  margin-bottom: 1.5rem; /* Increased margin below the headings */
+  font-size: 2.3rem; /* Increased font size for headings */
+}
+
+#about p,
+#vision p {
+  text-align: justify;
+  font-size: 1.3rem; /* Increased font size for text */
+  line-height: 1.5; /* Adjusted line height for better readability */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  #about, #vision {
+      max-width: 90vw; /* Adjusted max-width for smaller screens */
+  }
+
+  #about h2,
+  #vision h2 {
+      font-size: 2rem; /* Reduced font size for headings on smaller screens */
+  }
+
+  #about p,
+  #vision p {
+      font-size: 1.6rem; /* Reduced font size for text on smaller screens */
+  }
+}
+
 
 .home-get-started-holder {
   margin: 2rem 0;
@@ -46,7 +77,7 @@ h1 {
 .carousel-container {
   position: relative;
   width: 100%;
-  height: 450px; /* Adjust height as needed */
+  height: 100%; /* Adjust height as needed */
   overflow: hidden;
 }
 
@@ -59,6 +90,7 @@ h1 {
 .slider {
   flex: 0 0 auto;
   margin-right: 30px; /* Adjust margin as needed */
+  margin-top: -20px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -71,12 +103,4 @@ h1 {
   object-fit: cover;
 }
 
-.slide-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-}
+
