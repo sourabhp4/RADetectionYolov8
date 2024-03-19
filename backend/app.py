@@ -297,29 +297,29 @@ def calculateCategory_1_Score(imagePredictions):
             smallJointsAffectedCount += 1
 
     sumScore = 0
-    message = ''
+    message = []
 
     if smallJointsAffectedCount == 0:
-        message = 'Small joints are healthy'
+        message.append('Small joints are healthy')
         sumScore += scores.get('category_1').get('0_small')
     elif smallJointsAffectedCount > 0 and smallJointsAffectedCount <= 3:
-        message = 'There are few small joints are affected by RA'
+        message.append('There are few small joints are affected by RA')
         sumScore += scores.get('category_1').get('1-3_small')
     elif smallJointsAffectedCount > 3 and smallJointsAffectedCount <= 10:
-        message = 'There are more than 3 small joints affected by RA'
+        message.append('There are more than 3 small joints affected by RA')
         sumScore += scores.get('category_1').get('4-10_small')
     elif smallJointsAffectedCount > 10:
-        message = 'There are more than 10 small joints are affected by RA'
+        message.append('There are more than 10 small joints are affected by RA')
         sumScore += scores.get('category_1').get('>10_small')
     
     if largeJointsAffectedCount == 0:
-        message += '\nLarge joints are healthy'
+        message.append('Large joints are healthy')
         sumScore += scores.get('category_1').get('0_crpls')
     elif largeJointsAffectedCount == 1:
-        message += '\nRA might have affected large joints'
+        message.append('RA might have affected large joints')
         sumScore += scores.get('category_1').get('1_crpls')
     elif largeJointsAffectedCount == 2:
-        message += '\nRA has affected large joints'
+        message.append('RA has affected large joints')
         sumScore += scores.get('category_1').get('2_crpls')
 
     return { 'score': sumScore, 'message': message }
@@ -327,43 +327,43 @@ def calculateCategory_1_Score(imagePredictions):
 def calculateCategory_2_Score(bloodPredictions):
 
     sumScore = 0
-    message = ''
+    message = []
 
     for prediction in bloodPredictions:
         if prediction.get('type') == 'anticcp':
             sumScore += scores['category_2']['anticcp'].get(prediction.get('status'))
-            message += f"Your Anit-CCP (Anti-Cyclic Citrullinated Peptide) test value shows as - {prediction.get('status')}\n"
+            message.append(f"Your Anit-CCP (Anti-Cyclic Citrullinated Peptide) test value shows as - {prediction.get('status')}")
         if prediction.get('type') == 'rf':
             sumScore += scores['category_2']['rf'].get(prediction.get('status'))
-            message += f"Your RF (Rheumatoid Factor) test value shows as - {prediction.get('status')}\n"
+            message.append(f"Your RF (Rheumatoid Factor) test value shows as - {prediction.get('status')}")
 
     return { 'score': sumScore, 'message': message }
 
 def calculateCategory_3_Score(bloodPredictions):
 
     sumScore = 0
-    message = ''
+    message = []
 
     for prediction in bloodPredictions:
         if prediction.get('type') == 'crp':
             sumScore += scores['category_3']['crp'].get(prediction.get('status'))
-            message += f"Your CRP (C-Reactive Protein) test value shows as - {prediction.get('status')}\n"
+            message.append(f"Your CRP (C-Reactive Protein) test value shows as - {prediction.get('status')}")
         if prediction.get('type') == 'esr':
             sumScore += scores['category_3']['esr'].get(prediction.get('status'))
-            message += f"Your ESR (Erythrocyte Sedimentation Rate) test value shows as - {prediction.get('status')}\n"
+            message.append(f"Your ESR (Erythrocyte Sedimentation Rate) test value shows as - {prediction.get('status')}")
 
     return { 'score': sumScore, 'message': message }
 
 def calculateCategory_4_Score (durationPrediction):
     score = 0
-    message = ''
+    message = []
 
     if durationPrediction == 0:
         score += scores['category_4'].get('<_6Weeks')
-        message += 'Based on the duration of symptoms, probability of having RA is less'
+        message.append('Based on the duration of symptoms, probability of having RA is less')
     elif durationPrediction == 1:
         score += scores['category_4'].get('>=_6Weeks')
-        message += 'Based on the duration of symptoms, probability of having RA is more'
+        message.append('Based on the duration of symptoms, probability of having RA is more')
 
     return { 'score': score, 'message': message }
 
@@ -371,23 +371,23 @@ def calculateScore(imagePredictions, bloodPredictions, durationPredictions):
     resultScore = {
         'category_1': {
             'score' : 0,
-            'message': ''
+            'message': []
         },
         'category_2': {
             'score' : 0,
-            'message': ''
+            'message': []
         },
         'category_3': {
             'score' : 0,
-            'message': ''
+            'message': []
         },
         'category_4': {
             'score' : 0,
-            'message': ''
+            'message': []
         },
         'output': {
             'score': 0,
-            'message': ''
+            'message': []
         }
     }
     
