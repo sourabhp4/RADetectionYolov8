@@ -134,15 +134,15 @@ h3 {
 }
 
 .container {
-    height: 100vh; /* Set container height to fit the screen */
+    height: 105vh; 
 }
   
   .form {
-    margin-top: 2rem; /* Add space between the sections */
+    margin-top: 2rem; 
   }
   
   .form .card-body {
-    padding: 2rem; /* Add padding to the card body */
+    padding: 2rem; 
   }
 
   body {
@@ -188,7 +188,126 @@ h3 {
   }
 
   .small-image {
-    max-width: 200px; /* Adjust the maximum width as needed */
+    max-width: 200px; 
     height: auto;
   }
   
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 75%; 
+    margin: 0 auto;
+  }
+  
+  .card {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 0.25rem; 
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); 
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .card-title {
+    margin-bottom: 0;
+    font-size: 1.5rem; 
+    font-weight: bold;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  h3 {
+    margin-bottom: 15px;
+    font-size: 1.25rem; 
+  }
+  
+  .form-content {
+    margin-bottom: 15px;
+  }
+  
+  .form-label {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 120px; 
+  }
+  
+  .form-row {
+    display: flex;
+    margin-bottom: 15px;
+  }
+  
+  .col-sm-3,
+  .col-sm-9 {
+    padding: 5px 10px;
+  }
+  
+  .col-sm-3 {
+    width: 40%; 
+  }
+  
+  .col-sm-9 {
+    width: 60%;
+  }
+  
+  .input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%; 
+    margin-bottom: 10px;
+  }
+  
+  .input-group-text {
+    display: flex;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #eee;
+    border-radius: 0.25rem 0 0 0.25rem; 
+  }
+  
+  .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem; 
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  .form-select {
+    display: inline-block;
+    width: 100%;
+    padding: 0.5rem 2.25rem 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+  }  
