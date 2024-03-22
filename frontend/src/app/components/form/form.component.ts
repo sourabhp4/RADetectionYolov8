@@ -9,7 +9,7 @@ import Konva from 'konva';
   standalone: true,
   imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.css'
+  styleUrls: ['./form.component.css']
 })
 
 export class FormComponent {
@@ -89,39 +89,6 @@ export class FormComponent {
         }
       }
     })
-
-    // var scaleBy = 1.1
-    // this.konvaObject.on('wheel', (e: any) => {
-    //   // stop default scrolling
-    //   e.evt.preventDefault()
-
-    //   var oldScale = this.konvaObject.scaleX()
-    //   var pointer = this.konvaObject.getPointerPosition()
-
-    //   var mousePointTo = {
-    //     x: (pointer.x - this.konvaObject.x()) / oldScale,
-    //     y: (pointer.y - this.konvaObject.y()) / oldScale,
-    //   }
-
-    //   // how to scale? Zoom in? Or zoom out?
-    //   let direction = e.evt.deltaY > 0 ? 1 : -1
-
-    //   // when we zoom on trackpad, e.evt.ctrlKey is true
-    //   // in that case lets revert direction
-    //   if (e.evt.ctrlKey) {
-    //     direction = -direction
-    //   }
-
-    //   var newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy
-
-    //   this.konvaObject.scale({ x: newScale, y: newScale })
-
-    //   var newPos = {
-    //     x: pointer.x - mousePointTo.x * newScale,
-    //     y: pointer.y - mousePointTo.y * newScale,
-    //   }
-    //   this.konvaObject.position(newPos)
-    // })
   }
 }
 
@@ -283,3 +250,6 @@ const drawPredictions = (imagePredictions: DataOutputImagePrediction[], imageUrl
 
   return stage
 }
+
+
+
