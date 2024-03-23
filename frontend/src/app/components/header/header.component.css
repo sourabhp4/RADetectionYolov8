@@ -1,103 +1,169 @@
-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 5rem;
-    z-index: 2;
-    backdrop-filter: blur(5px);
-    background: rgb(0, 126, 24);
-    background: linear-gradient(90deg, rgba(0, 126, 24, 1) 0%, rgba(161, 255, 165, 1) 100%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-title {
-    margin: 0 2rem;
-}
-
-.header-links {
-    margin: 0 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    font-weight: bold;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
-.header-getStarted {
-    padding: 0.5rem;
-    border-radius: 10px;
-    transition: all;
-    transition-duration: 200ms;
-    background-color: #076C08;
+.logo {
+  font-size: 1.5rem;
+  /* Adjust font size */
+  font-weight: bold;
+  color: white;
+  /* Set text color */
+  margin: 0 0.1rem;
+  text-decoration: none;
+  /* Remove underline */
 }
 
-.header-getStarted:hover {
-    transform: scale(1.1);
-    transition: all;
-    transition-duration: 200ms;
+.button {
+  background-color: #076C08;
 }
 
-header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 5rem;
-      z-index: 2;
-      background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10rem; /* Add some padding */
-    }
-  
-    .header-container {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      width: 80%; /* Ensure container spans full width */
-    }
-  
-    .logo {
-      font-size: 1.5rem; /* Adjust font size */
-      font-weight: bold;
-      color: white; /* Set text color */
-      margin: 0 0.1rem;
-      text-decoration: none; /* Remove underline */
-    }
-    
-  
-    .navigation {
-      display: flex;
-      gap: 2rem; /* Adjust spacing between links */
-    }
-  
-    .nav-item {
-      color: white; /* Set text color */
-      font-weight: bold; /* Make text bold */
-      text-decoration: none; /* Remove underline */
-      padding: 0.6rem; /* Add padding */
-    }
-  
-    .button {
-      background-color: #076C08; 
-    }
-
-  .button {
-    padding: 0.7rem; /* Add padding */
-    border-radius: 30px; /* Make rounded edges */
-    transition: all 200ms ease; /* Smooth transition on hover */
-    background-color: #076C08; /* Green background color */
-    color: white; /* Text color */
-    }
+.button {
+  padding: 0.7rem;
+  /* Add padding */
+  border-radius: 30px;
+  /* Make rounded edges */
+  transition: all 200ms ease;
+  /* Smooth transition on hover */
+  background-color: #076C08;
+  /* Green background color */
+  color: white;
+  /* Text color */
+}
 
 .button:hover {
-  transform: scale(1.1); /* Hover effect: slightly larger */
+  transform: scale(1.1);
+  /* Hover effect: slightly larger */
   /* No need for separate transition definition - inherits from base `.button` */
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 5%;
+  align-items: center;
+  background: #18283B;
+}
+
+.logo {
+  color: #FFF;
+  font-size: 22px;
+}
+
+ul {
+  list-style: none;
+}
+
+ul li {
+  display: inline-block;
+}
+
+ul li a {
+  text-decoration: none;
+  color: #8291A5;
+  padding: 8px 30px;
+  border-radius: 7px;
+  transition: all .3s ease;
+}
+
+ul li a:hover,
+ul li a.active {
+  color: #FFF;
+  background: #0075FF;
+}
+
+#icon {
+  background-color: #0075FF;
+  padding: 5px 7px 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+#icon svg {
+  color: #FFF;
+  height: 28px;
+  transition: all .3s ease;
+}
+
+#icon:hover {
+  background: #FFF;
+}
+
+#icon:hover svg {
+  color: #0075FF;
+}
+
+#checkbox,
+#icon {
+  display: none;
+}
+
+/* Youtube link */
+.link {
+  position: fixed;
+  background-color: #D12322;
+  padding: 23px 40px;
+  right: -100px;
+  border-radius: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  transform: rotate(-90deg);
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFF;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: all .1s ease-in-out;
+}
+
+.link i {
+  padding-left: 7px;
+}
+
+.link:hover {
+  text-decoration: underline;
+  background-color: black;
+}
+
+@media screen and (max-width: 768px) {
+  nav {
+    border-bottom: 1px solid #455468;
+  }
+
+  ul {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 71px);
+    background-color: #18283B;
+    left: 0;
+    top: 0;
+    text-align: center;
+    display: none;
+    margin-top: 71px;
+  }
+
+  ul li {
+    display: block;
+    padding: 10px 15px;
+  }
+
+  ul li a {
+    display: block;
+    padding: 10px 0;
+  }
+
+  #icon {
+    display: block;
+  }
+
+  #checkbox:checked~ul {
+    display: block;
+  }
 }
