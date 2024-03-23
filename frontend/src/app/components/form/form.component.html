@@ -2,7 +2,34 @@
   <h1 class="form-heading1-h1">Get Started Here</h1>
 </section>
 
-<section id="form-instructions">
+<button class="nav-button" *ngIf="activeSection === 'instructions'" (click)="scrollToSection('form')">
+  <svg fill="#000000" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <path id="XMLID_225_"
+        d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z">
+      </path>
+    </g>
+  </svg>
+  Go to Form
+</button>
+<button class="nav-button" *ngIf="activeSection === 'form'" (click)="scrollToSection('form-instructions')">
+  <svg fill="#000000" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <path id="XMLID_224_"
+        d="M325.606,229.393l-150.004-150C172.79,76.58,168.974,75,164.996,75c-3.979,0-7.794,1.581-10.607,4.394 l-149.996,150c-5.858,5.858-5.858,15.355,0,21.213c5.857,5.857,15.355,5.858,21.213,0l139.39-139.393l139.397,139.393 C307.322,253.536,311.161,255,315,255c3.839,0,7.678-1.464,10.607-4.394C331.464,244.748,331.464,235.251,325.606,229.393z">
+      </path>
+    </g>
+  </svg>
+  Go to Instructions
+</button>
+
+<section id="form-instructions" (scroll)="onSectionScroll('instructions')">
   <h1 class="form-heading2">Instructions</h1>
   <div class="form-instructions-content">
 
@@ -47,7 +74,7 @@
   </div>
 </section>
 
-<section id="form">
+<section id="form" (scroll)="onSectionScroll('form')">
   <h1 class="form-heading2">Fill in the details</h1>
   <div class="form-content">
 
@@ -60,13 +87,17 @@
           <input type="file" id="image" name="image" accept="image/*" (input)="dataInputObj.passImageFile($event)">
           <label for="image">
             <div class="form-content-image-box">
-              <span class="form-content-image-box-drop-file"> Drop image file here </span>
-              <span class="form-content-image-box-or"> Or </span>
-              <span class="form-content-image-box-browse"> Browse </span>
+              <div class="form-content-image-prev"
+                *ngIf="dataInputObj.image.name == '' && dataInputObj.image.photoUrl == '' ">
+                <span class="form-content-image-box-drop-file"> Drop image file here </span>
+                <span class="form-content-image-box-or"> Or </span>
+                <span class="form-content-image-box-browse"> Browse </span>
+              </div>
               <div
                 *ngIf="dataInputObj.image.photoUrl != '' && dataInputObj.image.photoUrl != null && dataInputObj.image.photoUrl != undefined">
                 <img [src]="dataInputObj.image.photoUrl" class="uploadedImage">
-                <p>{{dataInputObj.image.name}}</p>
+                <p>{{dataInputObj.image.name.slice(0, 15) + '...'}}</p>
+                <p class="form-upload-newImage">Upload New</p>
               </div>
             </div>
           </label>
@@ -143,43 +174,45 @@
       </div>
     </div>
 
+    <p class="form-status">{{ statusString }}</p>
+
     <button class="form-submit-button" (click)="onSubmit($event)">Submit</button>
 
   </div>
 </section>
 
-<section class="rules-section">
+<section id="summary" *ngIf="isOutputAvailable">
+  <h1 class="form-heading2">Summary</h1>
 
-  <div class="summary">
-    <h2>SUMMARY</h2>
-    <div class="image-output-container">
-      <div id="imageCanvas"></div>
-      <div class="image-canvas-output" *ngIf="isOutputAvailable">
-        <div class="select-rect-type">
-          <label for="rectType">Select the Type:</label>
-          <select name="rectType" id="rectType" (change)="getRectType($event)" class="custom-select">
-            <option value="both">Both</option>
-            <option value="positive">Positive</option>
-            <option value="negative">Negative</option>
-          </select>
-        </div>
-
-        <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class
-          name</h3>
-        <div *ngIf=" currentImageClass !== '' ">
-          <p>Class: <b>{{ currentImageClass }}</b></p>
-          <p>Confidence: <b>{{ currentImageClassConf }}</b></p>
-        </div>
-        <br>
-        <h4>Note:</h4>
-        <p><span class="red-text">Red </span>Rectangular boxes shows RA <span class="red-text"> positive </span>
-          joints </p>
-        <p><span class="green-text">Green </span>Rectangular boxes shows RA <span class="green-text"> negative
-          </span> joints </p>
+  <div class="image-output-container">
+    <div id="imageCanvas"></div>
+    <div class="image-canvas-output">
+      <div class="select-rect-type">
+        <label for="rectType">Select the Type:</label>
+        <select name="rectType" id="rectType" (change)="getRectType($event)" class="custom-select">
+          <option value="both">Both</option>
+          <option value="positive">Positive</option>
+          <option value="negative">Negative</option>
+        </select>
       </div>
-    </div>
 
-    <div class="score-output-container" *ngIf="isOutputAvailable">
+      <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class
+        name</h3>
+      <div *ngIf=" currentImageClass !== '' ">
+        <p>Class: <b>{{ currentImageClass }}</b></p>
+        <p>Confidence: <b>{{ currentImageClassConf }}</b></p>
+      </div>
+      <br>
+      <h4>Note:</h4>
+      <p><span class="red-text">Red </span>Rectangular boxes shows RA <span class="red-text"> positive </span>
+        joints </p>
+      <p><span class="green-text">Green </span>Rectangular boxes shows RA <span class="green-text"> negative
+        </span> joints </p>
+    </div>
+  </div>
+
+  <div class="score-output-container">
+    <div class="score-output-container-1">
       <div class="score-output">
         <h3>About Joint-Detection</h3>
         <p><b>Message: </b> {{ resultScore.category_1.message }}</p>
@@ -190,7 +223,7 @@
         <p><b>Message: </b> {{ resultScore.category_2.message }}</p>
         <p><b>ACR/EULAR Score: </b>{{ resultScore.category_2.score }}</p>
       </div>
-      <div class="score-output" *ngIf="dataInputObj.isAnticcpPresent || dataInputObj.isRfPresent">
+      <div class="score-output" *ngIf="dataInputObj.isCrpPresent || dataInputObj.isEsrPresent">
         <h3>About CRP/ESR values</h3>
         <p><b>Message: </b> {{ resultScore.category_3.message }}</p>
         <p><b>ACR/EULAR Score: </b>{{ resultScore.category_3.score }}</p>
@@ -206,4 +239,156 @@
         <p><b>ACR/EULAR Score: </b>{{ resultScore.output.score }}</p>
       </div>
     </div>
+    <div>
+      <h3>Score Table</h3>
+      <div class="score-output-container-2">
+        <div class="score-category">
+          <b>Category 1: Joint-Detection</b>
+          <table>
+            <thead>
+              <td>Count_Type</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0_Small</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>1-3_Small</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td>4-10_Small</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td>&gt;10_Small</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td>0_Crpls</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>1_Crpls</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td>2_Crpls</td>
+                <td>2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="score-category">
+          <b>Category 2: Serology Classification</b>
+          <p>Anti-CCP</p>
+          <table>
+            <thead>
+              <td>Type</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Negative</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>Low-Positive</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td>Medium-Positive</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td>High-Positive</td>
+                <td>4</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Rheumatoid Factor (RF)</p>
+          <table>
+            <thead>
+              <td>Type</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Negative</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>Positive</td>
+                <td>3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="score-category">
+          <b>Category 3: Acute-Phase Reactants</b>
+          <p>C-Reactive Protein (CRP)</p>
+          <table>
+            <thead>
+              <td>Type</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Normal</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>Abnormal</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Erythrocyte Sedimentation Rate (ESR)</p>
+          <table>
+            <thead>
+              <td>Type</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Normal</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>Abnormal</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="score-category">
+          <b>Category 4: Duration of Symptoms</b>
+          <table>
+            <thead>
+              <td>Duration</td>
+              <td>Score</td>
+            </thead>
+            <tbody>
+              <tr>
+                <td>&lt;6 Weeks</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>&ge;6 Weeks</td>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
   </div>
+
+</section>
