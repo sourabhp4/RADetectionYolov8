@@ -1,170 +1,154 @@
-<section id="form-heading">
-  <h1 class="form-heading-h1">Get Started Here</h1>
+<section id="form-heading1">
+  <h1 class="form-heading1-h1">Get Started Here</h1>
 </section>
 
 <section id="form-instructions">
+  <h1 class="form-heading2">Instructions</h1>
+  <div class="form-instructions-content">
 
+    <div class="form-instructions-content-element">
+      <h2 class="form-instructions-content-element-heading">X-ray Image Requirements:</h2>
+      <p>Upload a single X-ray image displaying both hands clearly.</p>
+      <p>Ensure the image is in a standard format (e.g., JPEG, PNG) and high resolution for accurate
+        analysis.</p>
+      <p>Images must show all joints in both hands to facilitate proper assessment.</p>
+      <b>Below are the sample images for reference</b>
+      <img src="/assets/sample.jpg" alt="Sample x-ray images" class="sampleXrayImage">
+    </div>
+
+    <div class="form-instructions-content-element">
+      <h2 class="form-instructions-content-element-heading">Patient Information:</h2>
+      <p>Enter patient's age as a numerical value (in years).</p>
+      <p>Select the gender from the options: Male or Female.</p>
+    </div>
+
+    <div class="form-instructions-content-element">
+      <h2 class="form-instructions-content-element-heading">Duration of Symptoms:</h2>
+      <p>Input the duration of symptoms in weeks.</p>
+      <p>Provide the exact number of weeks since the onset of symptoms.</p>
+    </div>
+
+    <div class="form-instructions-content-element">
+      <h2 class="form-instructions-content-element-heading">Blood Sample Selection:</h2>
+      <p>Check the appropriate box for each blood sample to be inputted.</p>
+      <p>Ensure all relevant blood tests are selected for a comprehensive analysis.</p>
+      <p>Available options typically include Rheumatoid Factor (RF), anti-cyclic citrullinated peptide
+        (anti-CCP), C-reactive protein (CRP), and erythrocyte sedimentation rate (ESR).</p>
+    </div>
+
+    <div class="form-instructions-content-element">
+      <h2 class="form-instructions-content-element-heading">Blood Test Values Entry:</h2>
+      <p>Upon selecting a blood sample, input the corresponding values in EU/mL (European Units per
+        milliliter).</p>
+      <p>Provide accurate values obtained from recent blood tests for precise assessment.</p>
+      <p>Input each value carefully to avoid errors in analysis.</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="form">
+  <h1 class="form-heading2">Fill in the details</h1>
+  <div class="form-content">
+
+    <div class="form-content-element">
+      <h2 class="form-content-element-heading">X-ray Image Information</h2>
+      <p>Upload the x-ray image file *</p>
+      <div class="form-file-element">
+
+        <div class="form-content-image">
+          <input type="file" id="image" name="image" accept="image/*" (input)="dataInputObj.passImageFile($event)">
+          <label for="image">
+            <div class="form-content-image-box">
+              <span class="form-content-image-box-drop-file"> Drop image file here </span>
+              <span class="form-content-image-box-or"> Or </span>
+              <span class="form-content-image-box-browse"> Browse </span>
+              <div
+                *ngIf="dataInputObj.image.photoUrl != '' && dataInputObj.image.photoUrl != null && dataInputObj.image.photoUrl != undefined">
+                <img [src]="dataInputObj.image.photoUrl" class="uploadedImage">
+                <p>{{dataInputObj.image.name}}</p>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-content-element">
+      <h2 class="form-content-element-heading">Serology And Demographic Information</h2>
+
+      <div class="form-content-element-row">
+        <label for="age" class="">Patient's age (In Years)</label>
+        <input type="number" id="age" name="age" [(ngModel)]="dataInputObj.age" class="">
+      </div>
+
+      <div class="form-content-element-row">
+        <label for="gender" class="">Patient's gender</label>
+        <select name="gender" id="gender" class="form-select-gender" (change)="dataInputObj.passGender($event)">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+
+      <div class="form-content-element-row">
+        <label for="affectDuration" class="">Duration of Symptoms (In Weeks)</label>
+        <input type="number" id="affectDuration" name="affectDuration" [(ngModel)]="dataInputObj.affectDuration"
+          class="">
+      </div>
+
+      <h3 class="form-heading3">Select the Serology Types</h3>
+      <div class="form-content-element-row2">
+        <div class="form-row2-checkbox">
+          <input type="checkbox" id="anticcp" name="anticcp" value="anticcp"
+            (change)="dataInputObj.passType('anticcp')">
+          <label for="anticcp">Anti-CCP</label>
+        </div>
+        <div class="form-row2-input" *ngIf="dataInputObj.isAnticcpPresent">
+          <label for="anticcpValue">Enter the value in <b>EU/mL</b></label>
+          <input type="number" id="anticcpValue" name="anticcpValue" [(ngModel)]="dataInputObj.anticcpValue">
+        </div>
+      </div>
+
+      <div class="form-content-element-row2">
+        <div class="form-row2-checkbox">
+          <input type="checkbox" id="rf" name="rf" value="rf" (change)="dataInputObj.passType('rf')">
+          <label for="rf">Rheumotoid Factor</label>
+        </div>
+        <div class="form-row2-input" *ngIf="dataInputObj.isRfPresent">
+          <label for="rfValue">Enter the value in <b>EU/mL</b></label>
+          <input type="number" id="rfValue" name="rfValue" [(ngModel)]="dataInputObj.rfValue">
+        </div>
+      </div>
+
+      <div class="form-content-element-row2">
+        <div class="form-row2-checkbox">
+          <input type="checkbox" id="crp" name="crp" value="crp" (change)="dataInputObj.passType('crp')">
+          <label for="crp">C-Reactive Protein</label>
+        </div>
+        <div class="form-row2-input" *ngIf="dataInputObj.isCrpPresent">
+          <label for="crpValue">Enter the value in <b>EU/mL</b></label>
+          <input type="number" id="crpValue" name="crpValue" [(ngModel)]="dataInputObj.crpValue">
+        </div>
+      </div>
+
+      <div class="form-content-element-row2">
+        <div class="form-row2-checkbox">
+          <input type="checkbox" id="esr" name="esr" value="esr" (change)="dataInputObj.passType('esr')">
+          <label for="esr">Erythrocyte Sedimentation Rate</label>
+        </div>
+        <div class="form-row2-input" *ngIf="dataInputObj.isEsrPresent">
+          <label for="esrValue">Enter the value in <b>EU/mL</b></label>
+          <input type="number" id="esrValue" name="esrValue" [(ngModel)]="dataInputObj.esrValue">
+        </div>
+      </div>
+    </div>
+
+    <button class="form-submit-button" (click)="onSubmit($event)">Submit</button>
+
+  </div>
 </section>
 
 <section class="rules-section">
-  <div class="container">
-    <div class="card mb-3">
-      <div class="card-header text-center">
-        <h2>INSTRUCTIONS</h2>
-      </div>
-      <div class="card-body">
-        <ol>
-          <li>
-            <b class="list-item-content">X-ray Image Requirements:</b><br>
-            <div class="list-item-content">
-              <ul>
-                <li>Upload a single X-ray image displaying both hands clearly.</li>
-                <li>Ensure the image is in a standard format (e.g., JPEG, PNG) and high resolution for accurate
-                  analysis.</li>
-                <li>Images must show all joints in both hands to facilitate proper assessment.</li>
-              </ul>
-            </div>
-            <img class="small-image" src="assets/sample.jpg" alt="X-ray Image Example">
-            <div style="clear:both;"></div> <!-- Clear float to prevent overlapping -->
-          </li>
-
-
-          <li><b>Patient Information:</b>
-            <ul>
-              <li>Enter patient's age as a numerical value (in years).</li>
-              <li>Select the gender from the options: Male or Female.</li>
-            </ul>
-          </li><br>
-
-          <li><b>Duration of Symptoms:</b>
-            <ul>
-              <li>Input the duration of symptoms in weeks.</li>
-              <li>Provide the exact number of weeks since the onset of symptoms.</li>
-            </ul>
-          </li><br>
-
-          <li><b>Blood Sample Selection:</b>
-            <ul>
-              <li>Check the appropriate box for each blood sample to be inputted.</li>
-              <li>Ensure all relevant blood tests are selected for a comprehensive analysis.</li>
-              <li>Available options typically include Rheumatoid Factor (RF), anti-cyclic citrullinated peptide
-                (anti-CCP), C-reactive protein (CRP), and erythrocyte sedimentation rate (ESR).</li>
-            </ul>
-          </li><br>
-
-          <li><b>Blood Test Values Entry:</b>
-            <ul>
-              <li>Upon selecting a blood sample, input the corresponding values in EU/mL (European Units per
-                milliliter).</li>
-              <li>Provide accurate values obtained from recent blood tests for precise assessment.</li>
-              <li>Input each value carefully to avoid errors in analysis.</li>
-            </ul>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="card mb-3">
-      <div class="card-header text-center">
-        <h2 class="card-title">FILL THE DETAILS</h2>
-      </div>
-      <div class="card-body">
-        <form>
-          <h3>Joint-Detection</h3>
-          <p class="mb-2">Upload the x-ray image file *</p>
-          <div class="input-group mb-3">
-            <input type="file" class="form-control" id="image" name="image" accept="image/*"
-              aria-label="Upload X-ray Image" (input)="dataInputObj.passImageFile($event)">
-            <label class="input-group-text" for="image">Browse</label>
-          </div>
-          <br>
-
-          <h3>Serology</h3>
-
-          <div class="row mb-3">
-            <label for="age" class="col-sm-3 col-form-label">Patient's age</label>
-            <div class="col-sm-3">
-              <input type="number" id="age" name="age" [(ngModel)]="dataInputObj.age" class="form-control">
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <label for="gender" class="col-sm-3 col-form-label">Patient's gender</label>
-            <div class="col-sm-3">
-              <select name="gender" id="gender" class="form-select" (change)="dataInputObj.passGender($event)">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
-          </div>
-
-
-          <div class="row mb-3">
-            <label for="affectDuration" class="col-sm-3 col-form-label">Duration of Symptoms</label>
-            <div class="col-sm-3 d-flex align-items-center">
-              <input type="number" id="affectDuration" name="affectDuration" class="form-control"
-                [(ngModel)]="dataInputObj.affectDuration">
-              <b><small class="in-weeks-label">In Weeks</small></b>
-            </div>
-          </div>
-
-          <div class="row mb-3">
-            <div class="col-sm-3">
-              <input type="checkbox" id="anticcp" name="anticcp" value="anticcp"
-                (change)="dataInputObj.passType('anticcp')">
-              <label for="anticcp" class="form-check-label ms-2">Anti-CCP</label>
-            </div>
-            <div class="col-sm-9 d-flex align-items-center">
-              <label for="anticcpValue" class="form-label ms-3 single-line-label">Enter the value in EU/mL</label>
-              <input type="number" id="anticcpValue" name="anticcpValue" class="form-control ms-3"
-                [(ngModel)]="dataInputObj.anticcpValue">
-            </div>
-          </div><br>
-
-          <div class="row mb-3">
-            <div class="col-sm-3">
-              <input type="checkbox" id="rf" name="rf" value="rf" (change)="dataInputObj.passType('rf')">
-              <label for="rf" class="form-check-label ms-2">Rheumotoid Factor</label>
-            </div>
-            <div class="col-sm-9 d-flex align-items-center">
-              <label for="rfValue" class="form-label ms-3 single-line-label">Enter the value in EU/mL</label>
-              <input type="number" id="rfValue" name="rfValue" class="form-control ms-3"
-                [(ngModel)]="dataInputObj.rfValue">
-            </div>
-          </div><br>
-
-          <div class="row mb-3">
-            <div class="col-sm-3">
-              <input type="checkbox" id="crp" name="crp" value="crp" (change)="dataInputObj.passType('crp')">
-              <label for="crp" class="form-check-label ms-2">C-Reactive Protein</label>
-            </div>
-            <div class="col-sm-9 d-flex align-items-center">
-              <label for="crpValue" class="form-label ms-3 single-line-label">Enter the value in EU/mL</label>
-              <input type="number" id="crpValue" name="crpValue" class="form-control ms-3"
-                [(ngModel)]="dataInputObj.crpValue">
-            </div>
-          </div><br>
-
-          <div class="row mb-3">
-            <div class="col-sm-3">
-              <input type="checkbox" id="esr" name="esr" value="esr" (change)="dataInputObj.passType('esr')">
-              <label for="esr" class="form-check-label ms-2">Erythrocyte Sedimentation Rate</label>
-            </div>
-            <div class="col-sm-9 d-flex align-items-center">
-              <label for="esrValue" class="form-label ms-3 single-line-label">Enter the value in EU/mL</label>
-              <input type="number" id="esrValue" name="esrValue" class="form-control ms-3"
-                [(ngModel)]="dataInputObj.esrValue">
-            </div>
-          </div>
-
-          <button class="form-submit" (click)="onSubmit($event)">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div><br>
-  <br>
 
   <div class="summary">
     <h2>SUMMARY</h2>
