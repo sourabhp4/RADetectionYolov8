@@ -73,8 +73,9 @@
   text-align: center;
 }
 
-.objectives-heading {
-  margin-bottom: 1rem;
+.objectives-heading,
+.team-heading {
+  margin-bottom: 2rem;
   color: var(--secondary-color);
   font-size: xx-large;
 }
@@ -118,13 +119,67 @@
   color: var(--primary-color);
   font-size: large;
   margin-top: 20px;
-  transition: all 0.5s;
+  transition: all 0.5s ease;
   font-weight: bold;
 }
 
+#team {
+  margin: 3rem auto 0 auto;
+  padding: 3rem 6rem;
+  background-color: var(--section-bg-color);
+}
 
+.team-members-container {
+  display: flex;
+  justify-content: space-between;
+}
 
+.team-member {
+  border-radius: 1rem;
+  background-color: var(--white-color);
+  padding: 2rem 2rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.5s ease;
+  width: 18%;
+  height: auto;
+}
 
+.team-member:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+  transform: scale(1.05);
+  transition: all 0.5s ease;
+
+}
+
+.team-member img {
+  width: 13rem;
+  height: 16rem;
+}
+
+.team-member-name {
+  font-size: large;
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+.team-member-linkedin {
+  text-decoration: none;
+}
+
+.team-member-linkedin:hover svg {
+  fill: var(--primary-color);
+  transition: all 0.5s ease;
+}
+
+.team-member-linkedin svg {
+  width: 2rem;
+  height: 2rem;
+  transition: all 0.5s ease;
+}
 
 
 
@@ -177,16 +232,6 @@
   text-align: center;
 }
 
-#team {
-  margin: 3rem auto 0 auto;
-  padding: 2rem;
-  max-width: 80vw;
-  color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
 
 #vision {
   margin: 3rem auto 0 auto;
