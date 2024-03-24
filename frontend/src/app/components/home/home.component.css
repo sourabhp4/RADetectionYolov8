@@ -29,7 +29,7 @@ h1 {
 }
 
 #objectives {
-  margin: 3rem auto 0 auto;
+  margin: 0 auto 0 auto;
   padding: 2rem;
   /* max-width: 80vw; */
   color: var(--secondary-color);
