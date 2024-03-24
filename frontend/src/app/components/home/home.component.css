@@ -264,95 +264,23 @@
   color: var(--section-bg-color);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.cards {
-  margin: 3rem auto 0 auto;
-  padding: 2rem;
-  max-width: 80vw;
-  color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #f5f5f5;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
-
+#vision,
 #about {
-  margin: 3rem auto 0 auto;
-  padding: 2rem;
-  max-width: 80vw;
+  margin: 0 auto;
+  padding: 3rem 6rem;
+  background-color: var(--section-bg-color);
+
+}
+
+#vision h2,
+#about h2 {
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  font-size: x-large;
+}
+
+#vision p,
+#about p {
+  font-size: large;
   color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
-
-
-#vision {
-  margin: 3rem auto 0 auto;
-  padding: 2rem;
-  max-width: 80vw;
-  color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
-
-#about h2,
-#vision h2 {
-  margin-bottom: 1.5rem;
-  /* Increased margin below the headings */
-  font-size: 2.3rem;
-  color: black;
-  /* Increased font size for headings */
-}
-
-#about p,
-#vision p {
-  text-align: justify;
-  font-size: 1.3rem;
-  color: var(--p-color);
-  /* Increased font size for text */
-  line-height: 1.5;
-  /* Adjusted line height for better readability */
-}
-
-/* Adjustments for smaller screens */
-@media (max-width: 768px) {
-
-  #about,
-  #vision,
-  #objectives {
-    max-width: 90vw;
-    /* Adjusted max-width for smaller screens */
-  }
-
-  #about h2,
-  #vision h2 {
-    font-size: 2rem;
-
-    /* Reduced font size for headings on smaller screens */
-  }
-
-  #about p,
-  #vision p {
-    font-size: 1.6rem;
-    color: var(--p-color);
-    /* Reduced font size for text on smaller screens */
-  }
 }
