@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Konva from 'konva';
 
@@ -22,6 +22,9 @@ export class FormComponent {
   konvaObject: any
   scale = 1
 
+  statusString = ''
+  activeSection = ''
+
   imagePredictions: DataOutputImagePrediction[] = []
   resultScore: DataOutputScore
 
@@ -34,6 +37,8 @@ export class FormComponent {
   onSubmit(event: any) {
     event.preventDefault()
 
+    this.statusString = 'Processing the request...'
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': "Application/json",
@@ -43,16 +48,15 @@ export class FormComponent {
 
     this.http.post('http://127.0.0.1:5000/predict', this.dataInputObj, httpOptions).subscribe((res: any) => {
       if (res.error) {
-        console.log(res.error)
-      } else if (res.imageError) {
-        console.log(res.imageError)
-      } else if (res.bloodError) {
-        console.log(res.imagePredictions, res.bloodError)
+        this.statusString = res.error
       } else {
+        this.statusString = 'Successfully processed the request. Please scroll down to view the summary.'
         this.isOutputAvailable = true
         this.imagePredictions = res.imagePredictions
         this.resultScore = res.resultScore
-        this.onResult()
+        setTimeout(() => {
+          this.onResult()
+        }, 1000)
       }
     })
   }
@@ -89,6 +93,33 @@ export class FormComponent {
         }
       }
     })
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(event: any) {
+    const instructions = document.getElementById('form-instructions')
+    const form = document.getElementById('form')
+    const scrollPosition = window.scrollY;
+
+    if (instructions != null && form != null) {
+      if (scrollPosition >= instructions.offsetTop && scrollPosition < form.offsetTop) {
+        this.activeSection = 'instructions'
+      } else if (scrollPosition >= form.offsetTop) {
+        this.activeSection = 'form'
+      }
+    }
+  }
+
+  onSectionScroll(sectionId: string) {
+    this.activeSection = sectionId
+  }
+
+  scrollToSection(sectionId: string): void {
+    const section = document.getElementById(sectionId)
+    if (section) {
+      const offsetTop = section.offsetTop
+      window.scrollTo({ top: offsetTop + 10, behavior: 'smooth' })
+    }
   }
 }
 

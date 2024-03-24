@@ -434,17 +434,17 @@ def predict():
         imagePredictions = process_image(image_resized)
 
         if imagePredictions is None:
-            return jsonify({"error": 'image'})
+            return jsonify({"error": 'Something went wrong while processing the image. Please try again...'})
         
         bloodPredictions = make_serology_prediction(request.json)
 
         if bloodPredictions is None:
-            return jsonify({"error": 'blood'})
+            return jsonify({"error": 'Something went wrong while processing the serology data. Please try again...'})
 
         durationPrediction = make_durationPrediction(request.json)
 
         if durationPrediction is None:
-            return jsonify({"error": 'duration'})
+            return jsonify({"error": 'Something went wrong while processing the duration of symptoms. Please try again...'})
         
         resultScore = calculateScore(imagePredictions, bloodPredictions, durationPrediction)
 
