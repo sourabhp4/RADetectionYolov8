@@ -179,7 +179,8 @@
   </div>
 </section>
 
-<section id="summary" *ngIf="isOutputAvailable">
+<!-- <section id="summary" *ngIf="isOutputAvailable"> -->
+<section id="summary">
   <h1 class="form-heading2">Summary</h1>
 
   <div class="image-output-container">
@@ -237,156 +238,9 @@
         <p><b>ACR/EULAR Score: </b>{{ resultScore.output.score }}</p>
       </div>
     </div>
-    <div>
+    <div class="score-output-container-2">
       <h3>Score Table</h3>
-      <div class="score-output-container-2">
-        <div class="score-category">
-          <b>Category 1: Joint-Detection</b>
-          <table>
-            <thead>
-              <td>Count_Type</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>0_Small</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>1-3_Small</td>
-                <td>2</td>
-              </tr>
-              <tr>
-                <td>4-10_Small</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>&gt;10_Small</td>
-                <td>5</td>
-              </tr>
-              <tr>
-                <td>0_Crpls</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>1_Crpls</td>
-                <td>1</td>
-              </tr>
-              <tr>
-                <td>2_Crpls</td>
-                <td>2</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="score-category">
-          <b>Category 2: Serology Classification</b>
-          <p>Anti-CCP</p>
-          <table>
-            <thead>
-              <td>Type</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Negative</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Low-Positive</td>
-                <td>2</td>
-              </tr>
-              <tr>
-                <td>Medium-Positive</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>High-Positive</td>
-                <td>4</td>
-              </tr>
-            </tbody>
-          </table>
-          <p>Rheumatoid Factor (RF)</p>
-          <table>
-            <thead>
-              <td>Type</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Negative</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Positive</td>
-                <td>3</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="score-category">
-          <b>Category 3: Acute-Phase Reactants</b>
-          <p>C-Reactive Protein (CRP)</p>
-          <table>
-            <thead>
-              <td>Type</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Normal</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Abnormal</td>
-                <td>1</td>
-              </tr>
-            </tbody>
-          </table>
-          <p>Erythrocyte Sedimentation Rate (ESR)</p>
-          <table>
-            <thead>
-              <td>Type</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Normal</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Abnormal</td>
-                <td>1</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="score-category">
-          <b>Category 4: Duration of Symptoms</b>
-          <table>
-            <thead>
-              <td>Duration</td>
-              <td>Score</td>
-            </thead>
-            <tbody>
-              <tr>
-                <td>&lt;6 Weeks</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>&ge;6 Weeks</td>
-                <td>1</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <img src="/assets/ScoreTable.jpg" alt="ScoreTable">
     </div>
-
-
   </div>
-
 </section>
