@@ -31,11 +31,10 @@ h1 {
 #objectives {
   margin: 3rem auto 0 auto;
   padding: 2rem;
-  max-width: 80vw;
+  /* max-width: 80vw; */
   color: var(--secondary-color);
   /* Adjusted max-width for better readability */
   background-color: #ffffff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
 }
 
@@ -191,6 +190,7 @@ h1 {
 
 .featured-block-image {
   display: block;
+  width: 10%;
   margin: auto;
   transition: all 0.5s;
 }
