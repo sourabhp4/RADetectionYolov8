@@ -1,10 +1,148 @@
-/* General styles */
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin-top: 2rem;
+.carousel-container {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.carousel-arrow {
+  background-color: var(--primary-color);
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  opacity: 90%;
+  border: none;
+  transition: all 0.4s ease;
+}
+
+.carousel-arrow:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+.carousel-container img {
+  width: 80%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+#get-started {
+  display: flex;
+  padding: 6rem 2rem;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  background-image: url('../../../assets/getStartedBackground.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 2rem 0;
+}
+
+.get-started-heading {
+  font-size: xx-large;
+  color: var(--secondary-color);
+}
+
+.get-started-button {
+  padding: 1rem 4rem;
+  border: none;
+  background-color: var(--primary-color);
+  border-radius: 1rem;
+  transition: all 0.3s;
+}
+
+
+.get-started-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+  transition: all 0.3s;
+
+}
+
+.get-started-button a {
+  text-decoration: none;
+  color: var(--dark-color);
+}
+
+#objectives {
+  margin: 0 auto;
+  padding: 2rem;
+  color: var(--secondary-color);
+  background-color: var(--white-color);
+  text-align: center;
+}
+
+.objectives-heading {
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+  font-size: xx-large;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.featured-block {
+  text-align: center;
+  transition: all 0.5s ease;
+  min-height: 256px;
+  padding: 15px;
+  width: 20%;
+}
+
+.featured-block:hover {
+  background: var(--section-bg-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+}
+
+.featured-block:hover .featured-block-image {
+  transform: scale(0.75);
+}
+
+.featured-block-image {
+  display: block;
+  width: 15rem;
+  height: 15rem;
+  margin: auto;
+  transition: all 0.5s;
+}
+
+.featured-block:hover .featured-block-text {
+  margin-top: 0;
+}
+
+.featured-block-text {
+  color: var(--primary-color);
+  font-size: large;
+  margin-top: 20px;
+  transition: all 0.5s;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .cards {
   margin: 3rem auto 0 auto;
@@ -25,16 +163,6 @@ h1 {
   /* Adjusted max-width for better readability */
   background-color: #ffffff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
-
-#objectives {
-  margin: 0 auto 0 auto;
-  padding: 2rem;
-  /* max-width: 80vw; */
-  color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #ffffff;
   text-align: center;
 }
 
@@ -133,80 +261,4 @@ h1 {
 
 .home-get-started:hover {
   background-color: #055767;
-}
-
-.carousel-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  /* Adjust height as needed */
-  overflow: hidden;
-}
-
-.carousel {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-.slider {
-  flex: 0 0 auto;
-  margin-right: 30px;
-  /* Adjust margin as needed */
-  margin-top: -20px;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.5s ease;
-}
-
-.slider img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-.flex-container {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.featured-block {
-  text-align: center;
-  transition: all 0.5s ease;
-  min-height: 256px;
-  padding: 15px;
-}
-
-.featured-block:hover {
-  background: var(--white-color);
-  border-radius: var(--border-radius-medium);
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
-}
-
-.featured-block:hover .featured-block-image {
-  transform: scale(0.75);
-}
-
-.featured-block-image {
-  display: block;
-  width: 10%;
-  margin: auto;
-  transition: all 0.5s;
-}
-
-.featured-block:hover .featured-block-text {
-  margin-top: 0;
-}
-
-.featured-block-text {
-  color: var(--primary-color);
-  font-size: var(--h5-font-size);
-  margin-top: 20px;
-  transition: all 0.5s;
-}
-
-a {
-  text-decoration: none;
-  color: black;
 }
