@@ -73,9 +73,8 @@
   text-align: center;
 }
 
-.objectives-heading,
-.team-heading {
-  margin-bottom: 2rem;
+.objectives-heading {
+  margin-bottom: 1rem;
   color: var(--secondary-color);
   font-size: xx-large;
 }
@@ -126,7 +125,12 @@
 #team {
   margin: 3rem auto 0 auto;
   padding: 3rem 6rem;
-  background-color: var(--section-bg-color);
+  background-color: var(--secondary-color);
+}
+
+.team-heading {
+  color: var(--white-color);
+  margin-bottom: 2rem;
 }
 
 .team-members-container {
@@ -181,8 +185,84 @@
   transition: all 0.5s ease;
 }
 
+.team-info {
+  display: flex;
+  margin-top: 2rem;
+  justify-content: center;
+}
 
+.team-guide {
+  padding: 3rem;
+  background-color: var(--white-color);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+}
 
+.team-guide:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+  transition: all 0.5s ease;
+}
+
+.team-guide-heading {
+  color: var(--secondary-color);
+}
+
+.team-guide img {
+  width: 12rem;
+  height: 15rem;
+}
+
+.team-guide-name {
+  color: var(--secondary-color);
+}
+
+.team-guide button {
+  border: none;
+  padding: 0.8rem 2rem;
+  background-color: var(--secondary-color);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.team-guide button:hover {
+  background-color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.college {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.college a {
+  text-decoration: none;
+}
+
+.college img {
+  background-color: var(--white-color);
+  padding: 0.5rem;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.college-name {
+  color: var(--white-color);
+}
+
+.college-address {
+  color: var(--section-bg-color);
+}
 
 
 
@@ -211,17 +291,6 @@
 }
 
 #about {
-  margin: 3rem auto 0 auto;
-  padding: 2rem;
-  max-width: 80vw;
-  color: var(--secondary-color);
-  /* Adjusted max-width for better readability */
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  text-align: center;
-}
-
-#guide {
   margin: 3rem auto 0 auto;
   padding: 2rem;
   max-width: 80vw;
@@ -286,24 +355,4 @@
     color: var(--p-color);
     /* Reduced font size for text on smaller screens */
   }
-}
-
-
-.home-get-started-holder {
-  margin: 2rem 0;
-  text-align: center;
-}
-
-.home-get-started {
-  padding: 1rem;
-  border-radius: 30px;
-  background-color: #076c08;
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-}
-
-.home-get-started:hover {
-  background-color: #055767;
 }
