@@ -1,147 +1,135 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-a {
+.navbar a {
   text-decoration: none;
-  color: black;
+  color: var(--black-color);
 }
 
-.logo {
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   font-size: 1.5rem;
   /* Adjust font size */
   font-weight: bold;
-  color: white;
+  color: var(--secondary-color);
   /* Set text color */
   margin: 0 0.1rem;
-  text-decoration: none;
+  vertical-align: middle;
   /* Remove underline */
 }
 
-.button {
-  background-color: #076C08;
+.nav-logo img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
 }
 
 .button {
   padding: 0.7rem;
+  margin: 5px;
   /* Add padding */
   border-radius: 30px;
   /* Make rounded edges */
   transition: all 200ms ease;
   /* Smooth transition on hover */
-  background-color: #076C08;
+  background-color: var(--white-color);
   /* Green background color */
-  color: white;
+  color: var(--black-color);
   /* Text color */
 }
 
 .button:hover {
   transform: scale(1.1);
+  background-color: var(--primary-color);
+  /* Green background color */
+  color: var(--white-color);
+  /* Text color */
   /* Hover effect: slightly larger */
   /* No need for separate transition definition - inherits from base `.button` */
 }
 
-nav {
+.navbar {
   display: flex;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 5;
   justify-content: space-between;
   padding: 15px 5%;
   align-items: center;
-  background: #18283B;
+  box-sizing: border-box;
+  background: var(--section-bg-color);
+  outline: 2px solid var(--primary-color);
 }
 
-.logo {
-  color: #FFF;
+.nav-logo {
   font-size: 22px;
 }
 
-ul {
-  list-style: none;
+.brand :hover {
+  color: var(--primary-color);
+  transition: all .3s ease;
 }
 
-ul li {
+.navbar ul {
+  list-style: none;
+  justify-content: space-around;
+}
+
+.navbar ul li {
   display: inline-block;
 }
 
-ul li a {
+.navbar ul li a {
   text-decoration: none;
-  color: #8291A5;
+  color: var(--secondary-color);
   padding: 8px 30px;
+  margin: 5px;
   border-radius: 7px;
   transition: all .3s ease;
 }
 
-ul li a:hover,
-ul li a.active {
-  color: #FFF;
-  background: #0075FF;
+.navbar ul li a:hover,
+.navbar ul li a.active {
+  color: var(--primary-color);
 }
 
-#icon {
-  background-color: #0075FF;
+.navbar #icon {
+  background-color: var(--primary-color);
   padding: 5px 7px 3px 7px;
   border-radius: 4px;
   cursor: pointer;
   transition: all .3s ease;
 }
 
-#icon svg {
-  color: #FFF;
+.navbar #icon svg {
+  color: var(--white-color);
   height: 28px;
   transition: all .3s ease;
 }
 
-#icon:hover {
-  background: #FFF;
+.navbar #icon:hover {
+  background: var(--white-color);
 }
 
-#icon:hover svg {
-  color: #0075FF;
+.navbar #icon:hover svg {
+  color: var(--primary-color);
 }
 
-#checkbox,
-#icon {
+.navbar #checkbox,
+.navbar #icon {
   display: none;
 }
 
-/* Youtube link */
-.link {
-  position: fixed;
-  background-color: #D12322;
-  padding: 23px 40px;
-  right: -100px;
-  border-radius: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  transform: rotate(-90deg);
-  font-size: 18px;
-  font-weight: 500;
-  color: #FFF;
-  text-decoration: none;
-  text-transform: capitalize;
-  transition: all .1s ease-in-out;
-}
-
-.link i {
-  padding-left: 7px;
-}
-
-.link:hover {
-  text-decoration: underline;
-  background-color: black;
-}
-
 @media screen and (max-width: 768px) {
-  nav {
-    border-bottom: 1px solid #455468;
+  .navbar {
+    outline: 2px solid var(--primary-color);
   }
 
-  ul {
+  .navbar ul {
     position: absolute;
     width: 100%;
     height: calc(100vh - 71px);
-    background-color: #18283B;
+    background-color: var(--white-color);
     left: 0;
     top: 0;
     text-align: center;
@@ -149,21 +137,21 @@ ul li a.active {
     margin-top: 71px;
   }
 
-  ul li {
+  .navbar ul li {
     display: block;
     padding: 10px 15px;
   }
 
-  ul li a {
+  .navbar ul li a {
     display: block;
     padding: 10px 0;
   }
 
-  #icon {
+  .navbar #icon {
     display: block;
   }
 
-  #checkbox:checked~ul {
+  .navbar #checkbox:checked~ul {
     display: block;
   }
 }
