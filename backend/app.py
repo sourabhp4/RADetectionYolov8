@@ -198,22 +198,14 @@ def anticcp_node(value):
         return 3
 
 def crp_node(value):
-    if value <= 20:
+    if value < 10:
         return 5
-    if value <= 39:
-        return 6
-    if value <= 59:
-        return 6
     else:
         return 6
 
 def esr_node(value):
-    if value <= 20:
+    if value < 20:
         return 5
-    if value <= 39:
-        return 6
-    if value <= 59:
-        return 6
     else:
         return 6
 
