@@ -278,6 +278,7 @@ def calculateCategory_1_Score(imagePredictions):
 
     smallJointsAffectedCount = 0
     largeJointsAffectedCount = 0
+    unAffectedCount = 0
     for prediction in imagePredictions:
         currentClass = prediction.get('class')
         if currentClass[1:-1] == 'crpls':
@@ -287,9 +288,15 @@ def calculateCategory_1_Score(imagePredictions):
 
         if currentClass[-1] == '1':
             smallJointsAffectedCount += 1
+        else:
+            unAffectedCount += 1
 
     sumScore = 0
     message = []
+
+    if unAffectedCount + smallJointsAffectedCount + largeJointsAffectedCount <= 5 :
+        message.append('The accurate detection depends on the clear hand x-ray image as instructed previously')
+        return { 'score': sumScore, 'message': message }
 
     if smallJointsAffectedCount == 0:
         message.append('Small joints are healthy')
@@ -408,7 +415,7 @@ def predict():
         image = request.json.get('image')
         imageName = image.get('name')
         imageUrl = image.get('photoUrl')
-        print(imageUrl)
+
         if imageName == '' or imageUrl == '' :
             return jsonify({"error": "No image uploaded"})
 
