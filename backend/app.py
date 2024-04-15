@@ -451,7 +451,7 @@ def predict():
 
     except Exception as e:
         print(f"Error handling prediction request: {e}")
-        return jsonify({"error": "An internal error occurred"})
+        return jsonify({"error": "An internal error occurred, Please check the type of image and try again..."})
 
 
 if __name__ == "__main__":

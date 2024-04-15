@@ -269,7 +269,8 @@
   margin: 0 auto;
   padding: 3rem 6rem;
   background-color: var(--section-bg-color);
-
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 #vision h2,
