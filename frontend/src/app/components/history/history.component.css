@@ -2,6 +2,7 @@
     padding: 3rem 5rem;
     min-height: 50vh;
     transition: all 0.5s ease-in;
+    background-color: var(--section-bg-color);
 }
 
 #history h1 {

@@ -18,6 +18,10 @@ export class LoginComponent {
   constructor(private http: HttpClient, private router: Router) {
     this.username = ''
     this.password = ''
+
+    if (localStorage.getItem('userId')){
+      localStorage.removeItem('userId')
+    }
   }
 
   onSubmit() {

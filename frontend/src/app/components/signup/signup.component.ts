@@ -20,12 +20,16 @@ export class SignupComponent {
     this.username = ''
     this.password = ''
     this.rePassword = ''
+    
+    if (localStorage.getItem('userId')){
+      localStorage.removeItem('userId')
+    }
   }
 
   onSubmit() {
 
     if (this.username === '' || this.password === '' || this.rePassword === '') {
-      this.message = 'All fields are required are required'
+      this.message = 'All fields are required'
       return
     }
     if (this.password !== this.rePassword) {

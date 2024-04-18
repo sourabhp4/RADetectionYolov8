@@ -1,0 +1,78 @@
+.auth-card {
+    width: 50vh;
+    min-height: 50vh;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--section-bg-color);
+}
+
+.auth-title {
+    text-align: center;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    font-size: xx-large;
+    margin-bottom: 1rem;
+}
+
+.auth-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.auth-content label {
+    color: var(--secondary-color);
+}
+
+.auth-content input {
+    width: 16rem;
+    padding: 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+}
+
+.auth-content input:focus {
+    outline: 1px solid var(--secondary-color);
+}
+
+.auth-message {
+    color: var(--secondary-color);
+}
+
+.auth-submit {
+    padding: 1rem;
+    width: 40%;
+    border: none;
+    border-radius: 1rem;
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    transition: all 0.5s ease;
+}
+
+.auth-submit:hover {
+    background-color: var(--primary-color);
+    transform: scale(1.1);
+    transition: all 0.5s ease;
+}
+
+.auth-link-message {
+    color: var(--secondary-color);
+    margin-top: 1rem;
+}
+
+.auth-link-message a {
+    text-decoration: none;
+    color: var(--dark-color);
+}
+
+.auth-link-message a:hover {
+    color: var(--p-color);
+}

@@ -15,12 +15,13 @@
         <input type="password" id="rePassword" name="rePassword" [(ngModel)]="rePassword" required>
     </div>
 
-    <p>{{message}}</p>
+    <p class="auth-message">{{message}}</p>
 
     <button
         (click)="onSubmit()"
+        class="auth-submit"
     >SUBMIT</button>
 
-    <p>Already having an account? <a href="/login">Login</a></p>
+    <p class="auth-link-message">Already having an account? <a href="/login">Login</a></p>
 </div>
 

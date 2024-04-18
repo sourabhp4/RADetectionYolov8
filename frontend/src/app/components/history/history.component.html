@@ -1,7 +1,7 @@
 <section id="history">
     <h1>Past Predictions</h1>
     <p class="history-message">{{message}}</p>
-    <h3 *ngIf="isLoaded && predictionList.length === 0">No Past Data Found</h3>
+    <h3 *ngIf="isLoaded && predictionList.length === 0">No Data Found, Predictions made by you, will be available here...</h3>
     <ul class="history-list" *ngIf="isLoaded && predictionList.length > 0">
         <li class="history-list-heading">
             <p>Sl. No.</p>

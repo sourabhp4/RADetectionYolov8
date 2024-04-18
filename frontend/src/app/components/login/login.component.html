@@ -1,20 +1,21 @@
 <div class="auth-card">
     <h2 class="auth-title">Login</h2>
     <div class="auth-content">
-        <label for="username">Enter your username</label>
-        <input type="email" id="username" name="username" [(ngModel)]="username">
+        <label for="username">Username</label>
+        <input type="email" id="username" name="username" [(ngModel)]="username" placeholder="Enter username">
     </div>
 
     <div class="auth-content">
-        <label for="password">Enter your password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="password">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Enter password">
     </div>
 
-    <p>{{message}}</p>
+    <p class="auth-message">{{message}}</p>
 
     <button
         (click)="onSubmit()"
+        class="auth-submit"
     >SUBMIT</button>
 
-    <p>Not having an account? <a href="/signup">SignUp</a></p>
+    <p class="auth-link-message">Not having an account? <a href="/signup">SignUp</a></p>
 </div>
