@@ -25,6 +25,8 @@ export class FormComponent {
   statusString = ''
   activeSection = ''
 
+  message = ''
+
   imagePredictions: DataOutputImagePrediction[] = []
   resultScore: DataOutputScore
 
@@ -36,6 +38,12 @@ export class FormComponent {
 
   onSubmit(event: any) {
     event.preventDefault()
+
+    if (!this.dataInputObj.isAnticcpPresent && !this.dataInputObj.isRfPresent && !this.dataInputObj.isCrpPresent && !this.dataInputObj.isEsrPresent){
+      this.message = 'The Accuracy of final prediction depends on the input of all categories'
+    }else {
+      this.message = ''
+    }
 
     this.statusString = 'Processing the request...'
 
