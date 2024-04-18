@@ -1,11 +1,13 @@
 #history {
-    padding: 1rem 5rem;
+    padding: 3rem 5rem;
+    min-height: 50vh;
+    transition: all 0.5s ease-in;
 }
 
 #history h1 {
-    color: var(--primary-color);
+    color: var(--secondary-color);
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .history-message, #history h3 {
