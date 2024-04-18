@@ -1,56 +1,67 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
 import Konva from 'konva';
-import { HistoryContentComponent } from '../history-content/history-content.component';
 
 @Component({
-  selector: 'app-history',
+  selector: 'app-history-content',
   standalone: true,
-  imports: [CommonModule, HistoryContentComponent],
-  templateUrl: './history.component.html',
-  styleUrl: './history.component.css',
+  imports: [CommonModule],
+  templateUrl: './history-content.component.html',
+  styleUrl: './history-content.component.css',
 })
-export class HistoryComponent {
+export class HistoryContentComponent implements OnInit {
+  @Input() prediction!: DataOutput 
 
-  message = 'Loading the history...'
-  predictionList: DataOutput[] = []
-  isLoaded = false
+  currentImageClass = ''
+  currentImageClassConf = 0.0
+  canvasRectType: 'both' | 'positive' | 'negative' = 'both'
+  konvaObject: any
+  scale = 1
 
-  constructor(private http: HttpClient, private router: Router) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Accept': "Application/json",
-        "Content-Type": "Application/json"
-      })
+  constructor () {
+  }
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.onResult()
+    }, 1000)
+  }
+
+  getRectType = (event: any) => {
+    let value: string = event?.target?.value
+    if (value && (value === 'both' || value === 'positive' || value === 'negative')) {
+      this.canvasRectType = event.target.value
     }
+    this.onResult()
+  }
 
-    const userId = localStorage.getItem('userId')
+  onResult = () => {
+    this.konvaObject = drawPredictions(this.prediction.imagePredictions, this.prediction.image.photoUrl, this.canvasRectType, this.prediction._id)
+    this.konvaObject.on('mousemove', () => {
+      let mousePos = this.konvaObject.getPointerPosition()
+      if (mousePos !== null) {
+        let mouseX = mousePos.x
+        let mouseY = mousePos.y
 
-    if (userId) {
-      this.http.post('http://127.0.0.1:5000/history', { userId }, httpOptions).subscribe((res: any) => {
-
-        if (res.status !== 200) {
-          this.message = res.error
-        } else {
-          this.message = ''
-          this.predictionList = res.predictionList
-          this.isLoaded = true
+        if (mouseX <= 30 || mouseX >= 670 || mouseY <= 30 || mouseY >= 670)
+          this.currentImageClass = ''
+        else {
+          this.prediction.imagePredictions.forEach((prediction1) => {
+            // Check if mouseX is between x1 and x2, and mouseY is between y1 and y2
+            if (mouseX >= prediction1.x1 + 30 && mouseX <= prediction1.x2 + 30 && mouseY >= prediction1.y1 + 30 && mouseY <= prediction1.y2 + 30) {
+              // If mouse is inside the rectangle, return the class name
+              if ((this.canvasRectType === 'negative' && prediction1.class.endsWith('1')) || (this.canvasRectType === 'positive' && prediction1.class.endsWith('0')))
+                return
+              this.currentImageClass = prediction1.class
+              this.currentImageClassConf = prediction1.confidence
+            }
+          })
         }
-      })
-    }
-  }
-
-
-  onExtend = (index: number) => {
-    this.predictionList[index].isExtended = true
-  }
-
-  onCompact = (index: number) => {
-    this.predictionList[index].isExtended = false
+      }
+    })
   }
 }
+
 
 class DataOutput {
   image: { name: string, photoUrl: string }
@@ -91,7 +102,7 @@ class DataOutput {
   }
 }
 
-export class DataOutputImagePrediction {
+class DataOutputImagePrediction {
   class: string
   confidence: number
   x1: number
@@ -109,7 +120,7 @@ export class DataOutputImagePrediction {
   }
 }
 
-export class DataOutputScore {
+class DataOutputScore {
   category_1: {
     message: string
     score: number
@@ -140,9 +151,9 @@ export class DataOutputScore {
   }
 }
 
-const drawPredictions = (imagePredictions: DataOutputImagePrediction[], imageUrl: string, rectType: string): Konva.Stage => {
+const drawPredictions = (imagePredictions: DataOutputImagePrediction[], imageUrl: string, rectType: string, id: string): Konva.Stage => {
   let stage = new Konva.Stage({
-    container: 'imageCanvas',
+    container: id,
     width: 700,
     height: 700
   })
@@ -190,5 +201,3 @@ const drawPredictions = (imagePredictions: DataOutputImagePrediction[], imageUrl
 
   return stage
 }
-
-

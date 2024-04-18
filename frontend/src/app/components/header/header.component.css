@@ -8,13 +8,10 @@
   align-items: center;
   gap: 1rem;
   font-size: 1.5rem;
-  /* Adjust font size */
   font-weight: bold;
   color: var(--secondary-color);
-  /* Set text color */
   margin: 0 0.1rem;
   vertical-align: middle;
-  /* Remove underline */
 }
 
 .nav-logo img {
@@ -26,25 +23,18 @@
 .button {
   padding: 0.7rem;
   margin: 5px;
-  /* Add padding */
   border-radius: 30px;
-  /* Make rounded edges */
   transition: all 200ms ease;
-  /* Smooth transition on hover */
   background-color: var(--white-color);
-  /* Green background color */
   color: var(--black-color);
-  /* Text color */
+  transition: all 0.5s ease;
 }
 
 .button:hover {
   transform: scale(1.1);
   background-color: var(--primary-color);
-  /* Green background color */
   color: var(--white-color);
-  /* Text color */
-  /* Hover effect: slightly larger */
-  /* No need for separate transition definition - inherits from base `.button` */
+  transition: all 0.5s ease;
 }
 
 .navbar {

@@ -136,6 +136,8 @@ export class DataInput {
   isEsrPresent: boolean
   esrValue: number
   affectDuration: number
+  patientId: string
+  userId: string
 
   constructor() {
     this.image = { name: '', photoUrl: '' }
@@ -150,6 +152,8 @@ export class DataInput {
     this.isEsrPresent = false
     this.esrValue = 0
     this.affectDuration = 0
+    this.patientId = ''
+    this.userId = localStorage.getItem('userId') || ''
   }
 
   passImageFile(event: any) {

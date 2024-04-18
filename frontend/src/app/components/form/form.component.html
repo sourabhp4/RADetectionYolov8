@@ -77,12 +77,22 @@
   <div class="form-content">
 
     <div class="form-content-element">
+      <h2 class="form-content-element-heading">Patient ID</h2>
+      <div class="form-content-element-row">
+        <label for="patientId" class="">Enter patient ID</label>
+        <input type="text" id="patientId" name="patientId" [(ngModel)]="dataInputObj.patientId">
+      </div>
+    </div>
+
+    <div class="form-content-element">
       <h2 class="form-content-element-heading">X-ray Image Information</h2>
       <p>Upload the x-ray image file *</p>
       <div class="form-file-element">
 
         <div class="form-content-image">
-          <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/bmp, image/jpg, image/webp, image/jfif, image/tiff" (input)="dataInputObj.passImageFile($event)">
+          <input type="file" id="image" name="image"
+            accept="image/jpeg, image/png, image/bmp, image/jpg, image/webp, image/jfif, image/tiff"
+            (input)="dataInputObj.passImageFile($event)">
           <label for="image">
             <div class="form-content-image-box">
               <div class="form-content-image-prev"

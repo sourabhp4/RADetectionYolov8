@@ -1,0 +1,70 @@
+
+<div class="history-content-patient-data">
+    <p>Age: <span>{{prediction.age}} (Years)</span></p>
+    <p>Gender: <span>{{prediction.gender}}</span></p>
+    <p>Duration of Symptoms: <span>{{prediction.affectDuration}} (Weeks)</span></p>
+    <p *ngIf="prediction.isAnticcpPresent">AntiCCP Value: <span>{{prediction.anticcpValue}} (EU/mL)</span></p>
+    <p *ngIf="prediction.isRfPresent">RF Value: <span>{{prediction.rfValue}} (IU/mL)</span></p>
+    <p *ngIf="prediction.isCrpPresent">CRP Value: <span>{{prediction.crpValue}} (mg/L)</span></p>
+    <p *ngIf="prediction.isEsrPresent">ESR Value: <span>{{prediction.esrValue}} (mm/hr)</span></p>
+</div>
+
+<div class="image-output-container">
+    <div id={{prediction._id}}></div>
+    <div class="image-canvas-output">
+        <div class="select-rect-type">
+            <label for="rectType">Select the Type:</label>
+            <select name="rectType" id="rectType" (change)="getRectType($event)" class="custom-select">
+                <option value="both">Both</option>
+                <option value="positive">Positive</option>
+                <option value="negative">Negative</option>
+            </select>
+        </div>
+
+        <h3 *ngIf=" currentImageClass === '' ">Hover on the rectangle boxes present on the image to view the class name</h3>
+        <div *ngIf=" currentImageClass !== '' ">
+            <p>Class: <b>{{ currentImageClass }}</b></p>
+            <p>Confidence: <b>{{ currentImageClassConf }}</b></p>
+        </div>
+        <br>
+        <h4>Note:</h4>
+        <p><span class="red-text">Red </span>Rectangular boxes shows RA <span class="red-text"> positive </span>
+            joints </p>
+        <p><span class="green-text">Green </span>Rectangular boxes shows RA <span class="green-text"> negative
+            </span> joints </p>
+    </div>
+</div>
+
+<div class="score-output-container">
+    <div class="score-output-container-1">
+        <div class="score-output">
+            <h3>About Joint-Detection</h3>
+            <p><b>Message: </b> {{ prediction.resultScore.category_1.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ prediction.resultScore.category_1.score }}</p>
+        </div>
+        <div class="score-output" *ngIf="prediction.isAnticcpPresent || prediction.isRfPresent">
+            <h3>About AntiCCP/RF values</h3>
+            <p><b>Message: </b> {{ prediction.resultScore.category_2.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ prediction.resultScore.category_2.score }}</p>
+        </div>
+        <div class="score-output" *ngIf="prediction.isCrpPresent || prediction.isEsrPresent">
+            <h3>About CRP/ESR values</h3>
+            <p><b>Message: </b> {{ prediction.resultScore.category_3.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ prediction.resultScore.category_3.score }}</p>
+        </div>
+        <div class="score-output">
+            <h3>About Duration of Symptoms</h3>
+            <p><b>Message: </b> {{ prediction.resultScore.category_4.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ prediction.resultScore.category_4.score }}</p>
+        </div>
+        <div class="score-output">
+            <h3>Final Info</h3>
+            <p><b>Message: </b> {{ prediction.resultScore.output.message }}</p>
+            <p><b>ACR/EULAR Score: </b>{{ prediction.resultScore.output.score }}</p>
+        </div>
+    </div>
+    <div class="score-output-container-2">
+        <h3>Score Table</h3>
+        <img src="/assets/ScoreTable1.png" alt="ScoreTable">
+    </div>
+</div>

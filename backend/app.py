@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson import json_util, ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 load_dotenv()
 
@@ -468,7 +469,18 @@ def login():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        image = request.json.get('image')
+
+        req_data = request.json
+        if not req_data.get('userId'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(req_data['userId'])})
+
+        if not user:
+            return jsonify({'error': 'Invalid UserID', "status": 401})
+    
+
+        image = req_data.get('image')
         imageName = image.get('name')
         imageUrl = image.get('photoUrl')
 
@@ -503,12 +515,39 @@ def predict():
         
         resultScore = calculateScore(imagePredictions, bloodPredictions, durationPrediction)
 
-        # predictions_collection.insert_one(user_data)
+        predictionData = req_data
+        predictionData['imagePredictions'] = imagePredictions
+        predictionData['resultScore'] = resultScore
+        predictionData['date'] = datetime.now()
+
+        predictions_collection.insert_one(predictionData)
 
         return jsonify({"imagePredictions": imagePredictions, "resultScore": resultScore, "status": 200})
 
     except Exception as e:
         print(f"Error handling prediction request: {e}")
+        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
+
+@app.route("/history", methods=["POST"])
+def history():
+    try:
+        req_data = request.json
+        if not req_data.get('userId'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(req_data['userId'])})
+
+        if not user:
+            return jsonify({'error': 'Invalid UserID', "status": 401})
+
+        predictionList = list(predictions_collection.find({ 'userId': req_data['userId'] }))
+        for prediction in predictionList:
+            prediction['_id'] = str(prediction['_id'])
+
+        return jsonify({"predictionList": predictionList, "status": 200})
+
+    except Exception as e:
+        print(f"Error handling history request: {e}")
         return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
 
 
