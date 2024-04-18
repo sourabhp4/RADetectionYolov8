@@ -7,9 +7,12 @@ import base64
 import os
 from dotenv import load_dotenv
 
+from pymongo import MongoClient
+from bson import json_util, ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
+
 load_dotenv()
 
-# Replace with your model path
 model_path = os.environ.get('MODEL_PATH')
 
 # Load the YOLOv8 model
@@ -80,6 +83,12 @@ scores = {
 # Create the Flask app
 app = Flask(__name__)
 CORS(app)
+
+# Configuration for MongoDB connection
+client = MongoClient(os.environ.get('MONGO_URI'))
+db = client['godproject']
+users_collection = db['users']
+predictions_collection = db['predictions']
 
 def process_image(image):
 
@@ -407,7 +416,54 @@ def calculateScore(imagePredictions, bloodPredictions, durationPredictions):
 
 @app.route('/', methods=["POST", "GET"])
 def home():
-    return jsonify({"error": "Please make POST request to /predict"})
+    return jsonify({"error": "Please make POST request to /predict", "status": 401})
+
+#CheckUser Route
+@app.route('/checkuser', methods=['POST'])
+def checkUser():
+    user_data = request.json
+    if not user_data.get('userId'):
+        return jsonify({'error': 'Do SignIn', "status": 400})
+    
+    user = users_collection.find_one({'_id': ObjectId(user_data['userId'])})
+
+    if not user:
+        return jsonify({'error': 'Invalid ID', "status": 401})
+    
+    return jsonify({'message': 'Successfull', "status": 200})
+
+#SignUp Route
+@app.route('/signup', methods=['POST'])
+def signup():
+    user_data = request.json
+    if not user_data.get('username') or not user_data.get('password'):
+        return jsonify({'error': 'Username and password are required', "status": 401})
+    
+    existing_user = users_collection.find_one({'username': user_data['username']})
+    if existing_user:
+        return jsonify({'error': 'Username already exists', "status": 401})
+    
+    # Hash the password before storing it
+    user_data['password'] = generate_password_hash(user_data['password'])
+    user_insert_result = users_collection.insert_one(user_data)
+    
+    # Retrieve the inserted document's _id
+    inserted_id = user_insert_result.inserted_id
+    
+    return jsonify({'message': 'User created successfully', 'userId': str(inserted_id), "status": 200})
+
+# Login route
+@app.route('/login', methods=['POST'])
+def login():
+    login_data = request.json
+    if not login_data.get('username') or not login_data.get('password'):
+        return jsonify({'error': 'Username and password are required', "status": 400})
+    
+    user = users_collection.find_one({'username': login_data['username']})
+    if not user or not check_password_hash(user['password'], login_data['password']):
+        return jsonify({'error': 'Invalid username or password', "status": 401})
+    
+    return jsonify({'message': 'Login successful', 'userId': str(user['_id']), "status": 200})
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -417,7 +473,7 @@ def predict():
         imageUrl = image.get('photoUrl')
 
         if imageName == '' or imageUrl == '' :
-            return jsonify({"error": "No image uploaded"})
+            return jsonify({"error": "No image uploaded", "status": 400})
 
         image_binary = base64.b64decode(imageUrl.split(",")[1])
 
@@ -433,25 +489,27 @@ def predict():
         imagePredictions = process_image(image_resized)
 
         if imagePredictions is None:
-            return jsonify({"error": 'Something went wrong while processing the image. Please try again...'})
+            return jsonify({"error": 'Something went wrong while processing the image. Please try again...', "status": 500})
         
         bloodPredictions = make_serology_prediction(request.json)
 
         if bloodPredictions is None:
-            return jsonify({"error": 'Something went wrong while processing the serology data. Please try again...'})
+            return jsonify({"error": 'Something went wrong while processing the serology data. Please try again...', "status": 500})
 
         durationPrediction = make_durationPrediction(request.json)
 
         if durationPrediction is None:
-            return jsonify({"error": 'Something went wrong while processing the duration of symptoms. Please try again...'})
+            return jsonify({"error": 'Something went wrong while processing the duration of symptoms. Please try again...', "status": 500})
         
         resultScore = calculateScore(imagePredictions, bloodPredictions, durationPrediction)
 
-        return jsonify({"imagePredictions": imagePredictions, "resultScore": resultScore})
+        # predictions_collection.insert_one(user_data)
+
+        return jsonify({"imagePredictions": imagePredictions, "resultScore": resultScore, "status": 200})
 
     except Exception as e:
         print(f"Error handling prediction request: {e}")
-        return jsonify({"error": "An internal error occurred, Please check the type of image and try again..."})
+        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
 
 
 if __name__ == "__main__":
