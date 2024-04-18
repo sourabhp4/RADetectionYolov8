@@ -9,5 +9,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-
+  onlogout () {
+    localStorage.removeItem('userId')
+    window.location.reload()
+  }
 }

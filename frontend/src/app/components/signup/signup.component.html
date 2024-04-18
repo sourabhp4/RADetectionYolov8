@@ -1,0 +1,26 @@
+<div class="auth-card">
+    <h2 class="auth-title">SignUp</h2>
+    <div class="auth-content">
+        <label for="username">Enter your username</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required>
+    </div>
+
+    <div class="auth-content">
+        <label for="password">Enter new password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required>
+    </div>
+
+    <div class="auth-content">
+        <label for="rePassword">Re-Enter new password</label>
+        <input type="password" id="rePassword" name="rePassword" [(ngModel)]="rePassword" required>
+    </div>
+
+    <p>{{message}}</p>
+
+    <button
+        (click)="onSubmit()"
+    >SUBMIT</button>
+
+    <p>Already having an account? <a href="/login">Login</a></p>
+</div>
+
