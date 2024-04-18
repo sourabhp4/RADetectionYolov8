@@ -2,4 +2,4 @@ flask
 flask_cors
 ultralytics
 python-dotenv
-Flask-PyMongo 
+pymongo
