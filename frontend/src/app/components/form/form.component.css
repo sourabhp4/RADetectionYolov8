@@ -125,6 +125,32 @@
   color: var(--secondary-color);
 }
 
+.form-content-element-patient {
+  display: flex;
+  gap: 6rem;
+}
+
+.form-content-element-patient p,
+.form-content-element-patient label {
+  color: var(--secondary-color);
+}
+
+.form-content-element-patient a{
+  text-decoration: none;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  transition: all 0.3s ease;
+  width: 30%;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.form-content-element-patient a:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: all 0.3s ease;
+}
+
 .form-file-element {
   display: flex;
   flex-direction: column;
@@ -200,10 +226,17 @@
   height: 10rem;
 }
 
-.form-content-element-row {
+.form-content-element-row, .form-content-element-row1 {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.form-content-element-row1 input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
 }
 
 .form-content-element-row input,
@@ -215,8 +248,44 @@
 }
 
 .form-content-element-row input:focus,
-.form-content-element-row select:focus {
+.form-content-element-row select:focus,
+.form-content-element-row1 input:focus {
   outline: 1px solid var(--secondary-color);
+}
+
+#patientUsername {
+  margin-bottom: 3rem;
+}
+
+.form-patients-list-row {
+  position: absolute;
+  margin-top: 6rem;
+  list-style-type: none;
+  background-color: var(--section-bg-color);
+  padding: 1rem;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-patients-list-row h4, .form-patients-list-row p {
+  color: gray;
+  text-align: center;
+}
+
+.form-patients-list-row1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  outline: 1px solid gray;
+  padding: 0.3rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-patients-list-row1:hover {
+  transform: scale(1.05);
+  transition: all 0.3s ease;
 }
 
 input::-webkit-outer-spin-button,

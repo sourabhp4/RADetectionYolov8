@@ -76,13 +76,28 @@
   <h1 class="form-heading2">Fill in the details</h1>
   <div class="form-content">
 
-    <div class="form-content-element">
-      <h2 class="form-content-element-heading">Patient ID</h2>
-      <div class="form-content-element-row">
-        <label for="patientId" class="">Enter patient ID</label>
-        <input type="text" id="patientId" name="patientId" [(ngModel)]="dataInputObj.patientId">
+    <div class="form-content-element-patient">
+      <div class="form-content-element-row1">
+        <h2 class="form-content-element-heading">Patient Unique Identity</h2>
+        <label for="patientUsername" class="">Enter patient username and select from list</label>
+        <input type="text" id="patientUsername" name="patientUsername" [(ngModel)]="currentUsername" (input)="onUsernameChange($event)">
+      </div>
+      <div class="form-content-element-row1" *ngIf="currentPatient.username !== ''">
+        <h2 class="form-content-element-heading">Selected Patient:</h2>
+        <p class="username">Username: <b>{{currentPatient.username}}</b></p>
+        <p>Date of Registration: <b>{{currentPatient.dateOfJoining}}</b></p>
+        <a href="">Patient History</a>
       </div>
     </div>
+    <ul class="form-patients-list-row" *ngIf="isLoaded && patientList">
+      <h4>{{patientListMessage}}</h4>
+      <li *ngFor="let patient of patientList; index as i;">
+        <div class="form-patients-list-row1" (click)="onClickPatient(patient)">
+          <p class="username">Username: <b>{{patient.username}}</b></p>
+          <p>Date of Registration: <b>{{patient.dateOfJoining}}</b></p>
+        </div>
+      </li>
+    </ul>
 
     <div class="form-content-element">
       <h2 class="form-content-element-heading">X-ray Image Information</h2>

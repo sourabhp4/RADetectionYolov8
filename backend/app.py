@@ -12,6 +12,7 @@ from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import jwt
+import re
 
 load_dotenv()
 
@@ -505,16 +506,28 @@ def login():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-
         req_data = request.json
-        if not req_data.get('userId'):
+        if not req_data.get('userToken'):
             return jsonify({'error': 'Do SignIn', "status": 401})
         
-        user = users_collection.find_one({'_id': ObjectId(req_data['userId'])})
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
 
-        if not user:
-            return jsonify({'error': 'Invalid UserID', "status": 401})
-    
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not doctor:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        patient = users_collection.find_one({'_id': ObjectId(req_data['patientId']), 'role': 'patient'}, { 'password': 0 })
+        if not patient:
+            return jsonify({'error': 'Invalid Patient Info', "status": 400})
 
         image = req_data.get('image')
         imageName = image.get('name')
@@ -555,6 +568,9 @@ def predict():
         predictionData['imagePredictions'] = imagePredictions
         predictionData['resultScore'] = resultScore
         predictionData['date'] = datetime.now()
+        predictionData['doctorId'] = str(doctor['_id'])
+        if 'userToken' in predictionData:
+            del predictionData['userToken']
 
         predictions_collection.insert_one(predictionData)
 
@@ -690,6 +706,49 @@ def patients():
     except Exception as e:
         print(f"Error handling users request: {e}")
         return jsonify({"error": "Something went wrong", "status": 500})
+
+@app.route("/getpatients", methods=["POST"])
+def getPatients():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not user:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        username_prefix = req_data.get('username', '')
+
+        # Construct a regex pattern to match usernames starting with the prefix
+        username_pattern = re.compile(f'{re.escape(username_prefix)}', re.IGNORECASE)
+
+        # Find users whose usernames match the pattern
+        patientList = list(users_collection.find(
+            {'username': {'$regex': username_pattern}, 'role': 'patient'}, 
+            {'password': 0, 'role': 0, 'status': 0}
+        ).limit(5).sort([('username', 1)]))
+
+        for patient in patientList:
+            patient['_id'] = str(patient['_id'])
+            patient['numRecords'] = predictions_collection.count_documents({ 'patientId': patient['_id'] })
+        return jsonify({"patientList": patientList, "status": 200})
+
+    except Exception as e:
+        print(f"Error handling users request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
+
 
 if __name__ == "__main__":
     app.run(debug=True)

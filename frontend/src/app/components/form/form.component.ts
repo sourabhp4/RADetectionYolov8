@@ -27,6 +27,20 @@ export class FormComponent {
 
   message = ''
 
+  userToken = ''
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Accept': "Application/json",
+      "Content-Type": "Application/json"
+    })
+  }
+
+  patientList: Patient[] = []
+  isLoaded = false
+  currentUsername = ''
+  currentPatient: Patient = new Patient()
+  patientListMessage = ''
+
   imagePredictions: DataOutputImagePrediction[] = []
   resultScore: DataOutputScore
 
@@ -34,14 +48,53 @@ export class FormComponent {
     this.dataInputObj = new DataInput()
     this.canvasRectType = 'both'
     this.resultScore = new DataOutputScore()
+    this.userToken = localStorage.getItem('userToken') || ''
+  }
+
+  onUsernameChange(event: any) {
+    let value: string = event?.target?.value
+
+    if (value === '') {
+      this.isLoaded = false
+      return
+    }
+
+    this.patientListMessage = 'Finding the patients with similar usernames...'
+
+    if (this.userToken) {
+      this.http.post('http://127.0.0.1:5000/getpatients', { userToken: this.userToken, username: value }, this.httpOptions).subscribe((res: any) => {
+        if (res.status === 401) {
+          this.patientListMessage = 'Unauthorized... Please Login again... Redirecting...'
+          setTimeout(() => {
+            window.location.href = '/login'
+          }, 1500)
+        }
+        else if (res.status !== 200) {
+          this.patientListMessage = res.error
+        } else {
+          this.patientListMessage = ''
+          if (res.patientList?.length === 0)
+            this.patientListMessage = 'No patient record found.'
+          this.patientList = res.patientList
+          this.isLoaded = true
+        }
+      })
+    }
+  }
+
+  onClickPatient(patient: Patient) {
+    this.dataInputObj.patientId = patient._id
+    this.currentPatient = patient
+    this.currentUsername = ''
+    this.isLoaded = false
   }
 
   onSubmit(event: any) {
     event.preventDefault()
 
-    if (!this.dataInputObj.isAnticcpPresent && !this.dataInputObj.isRfPresent && !this.dataInputObj.isCrpPresent && !this.dataInputObj.isEsrPresent){
+    if (!this.dataInputObj.isAnticcpPresent && !this.dataInputObj.isRfPresent && !this.dataInputObj.isCrpPresent && !this.dataInputObj.isEsrPresent) {
       this.message = 'The Accuracy of final prediction depends on the input of all categories'
-    }else {
+    } else {
       this.message = ''
     }
 
@@ -131,6 +184,12 @@ export class FormComponent {
   }
 }
 
+class Patient {
+  _id = ''
+  username = ''
+  dateOfJoining = ''
+}
+
 export class DataInput {
   image: { name: string, photoUrl: string }
   age: number
@@ -145,7 +204,7 @@ export class DataInput {
   esrValue: number
   affectDuration: number
   patientId: string
-  userId: string
+  userToken: string
 
   constructor() {
     this.image = { name: '', photoUrl: '' }
@@ -161,7 +220,7 @@ export class DataInput {
     this.esrValue = 0
     this.affectDuration = 0
     this.patientId = ''
-    this.userId = localStorage.getItem('userId') || ''
+    this.userToken = localStorage.getItem('userToken') || ''
   }
 
   passImageFile(event: any) {
