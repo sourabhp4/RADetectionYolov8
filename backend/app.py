@@ -469,6 +469,18 @@ def signup():
     
     if user_data.get('role') != 'patient' and user_data.get('role') != 'doctor':
         return jsonify({'error': 'Unknown role', "status": 400})
+    
+    print(user_data)
+
+    if user_data.get('role') == 'patient':
+        dob_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')  # Regex pattern for dd-mm-yyyy format
+        dob = user_data.get('dob', '')
+        
+        if not dob_pattern.match(dob):
+            return jsonify({'error': 'Provide valid date of birth in dd-mm-yyyy format', 'status': 400})
+
+        if user_data.get('gender') != 'male' and user_data.get('gender') != 'female':
+            return jsonify({'error': 'Gender can only be male or female', "status": 400})
 
     # Hash the password before storing it
     user_data['password'] = generate_password_hash(user_data['password'])
@@ -571,6 +583,10 @@ def predict():
         predictionData['doctorId'] = str(doctor['_id'])
         if 'userToken' in predictionData:
             del predictionData['userToken']
+        if 'gender' in predictionData:
+            del predictionData['gender']
+        if 'age' in predictionData:
+            del predictionData['age']
 
         predictions_collection.insert_one(predictionData)
 
@@ -625,7 +641,7 @@ def users():
             return jsonify({'error': 'Unauthorized', "status": 401})
         
         if req_data['presentRole'] == 'patient':
-            patientList = list(users_collection.find({ 'role': 'patient' }, { 'password': 0 }))
+            patientList = list(users_collection.find({ 'role': 'patient' }, { 'password': 0, 'age': 0, 'gender': 0 }))
             for patient in patientList:
                 patient['_id'] = str(patient['_id'])
                 patient['numRecords'] = predictions_collection.count_documents({ 'patientId': patient['_id'] })
@@ -697,7 +713,15 @@ def patients():
         if not user:
             return jsonify({'error': 'Unauthorized', "status": 401})
         
-        patientList = list(users_collection.find({ 'role': 'patient' }, { 'password': 0 }))
+        username_prefix = req_data.get('searchString', '')
+
+        # Construct a regex pattern to match usernames starting with the prefix
+        username_pattern = re.compile(f'{re.escape(username_prefix)}', re.IGNORECASE)
+        
+        patientList = list(users_collection.find(
+            {'username': {'$regex': username_pattern}, 'role': 'patient'},
+            {'password': 0, 'role': 0, 'status': 0}
+        ))
         for patient in patientList:
             patient['_id'] = str(patient['_id'])
             patient['numRecords'] = predictions_collection.count_documents({ 'patientId': patient['_id'] })
@@ -749,6 +773,44 @@ def getPatients():
         print(f"Error handling users request: {e}")
         return jsonify({"error": "Something went wrong", "status": 500})
 
+@app.route("/getpatientdetails", methods=["POST"])
+def getPatientDetails():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not doctor:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        patient = users_collection.find_one({'_id': ObjectId(req_data.get('patientId')), 'role': 'patient'}, { 'password': 0 })
+
+        if not patient:
+            return jsonify({'error': 'Bad Request', "status": 400})
+
+        historyList = list(predictions_collection.find({ 'patientId': req_data['patientId'] }))
+        for history in historyList:
+            history['_id'] = str(history['_id'])
+        
+        patient['_id'] = str(patient['_id'])
+
+        return jsonify({"patientData": patient, 'historyList': historyList, "status": 200})
+
+    except Exception as e:
+        print(f"Error handling users request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
 
 if __name__ == "__main__":
     app.run(debug=True)

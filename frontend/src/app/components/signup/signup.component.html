@@ -2,26 +2,39 @@
     <h2 class="auth-title">SignUp</h2>
     <div class="auth-content">
         <label for="username">Enter your username</label>
-        <input type="text" id="username" name="username" [(ngModel)]="username" required>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required placeholder="Username">
     </div>
 
 
     <div class="auth-content">
         <label for="role">Select your role</label>
-        <select name="role" id="role" #role (change)="onRoleChange(role.value)">
+        <select name="role" id="role" #roleSelect (change)="onRoleChange(roleSelect.value)">
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
         </select>
     </div>
 
+    <div class="auth-content" *ngIf="role === 'patient'">
+        <label for="dob" class="">Enter your date of birth</label>
+        <input type="date" id="dob" name="dob" [(ngModel)]="dob" class="" max="{{ maxDate }}">
+    </div>
+
+    <div class="auth-content" *ngIf="role === 'patient'">
+        <label for="gender" class="">Select your gender as per your Birth Certificate</label>
+        <select name="gender" id="gender" class="form-select-gender" #gender (change)="onGenderChange(gender.value)">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+    </div>
+
     <div class="auth-content">
         <label for="password">Enter new password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="password" required>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="Password">
     </div>
 
     <div class="auth-content">
         <label for="rePassword">Re-Enter new password</label>
-        <input type="password" id="rePassword" name="rePassword" [(ngModel)]="rePassword" required>
+        <input type="password" id="rePassword" name="rePassword" [(ngModel)]="rePassword" required placeholder="Confirm Password">
     </div>
 
     <p class="auth-message">{{message}}</p>

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import Konva from 'konva';
 
 @Component({
@@ -44,7 +45,7 @@ export class FormComponent {
   imagePredictions: DataOutputImagePrediction[] = []
   resultScore: DataOutputScore
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.dataInputObj = new DataInput()
     this.canvasRectType = 'both'
     this.resultScore = new DataOutputScore()
@@ -99,6 +100,9 @@ export class FormComponent {
     }
 
     this.statusString = 'Processing the request...'
+
+    this.dataInputObj.age = this.getAgeFromDOB(this.currentPatient.dob)
+    this.dataInputObj.gender = this.currentPatient.gender
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -182,18 +186,43 @@ export class FormComponent {
       window.scrollTo({ top: offsetTop + 10, behavior: 'smooth' })
     }
   }
+
+  getAgeFromDOB(dob: string): number {
+    const dobDate = new Date(dob)
+
+    const currentDate = new Date()
+
+    let age = currentDate.getFullYear() - dobDate.getFullYear()
+
+    // Check if birthday has occurred this year
+    const currentMonth = currentDate.getMonth()
+    const dobMonth = dobDate.getMonth()
+
+    if (currentMonth < dobMonth || (currentMonth === dobMonth && currentDate.getDate() < dobDate.getDate())) {
+      age-- // Subtract 1 if birthday hasn't occurred yet
+    }
+
+    return age;
+  }
+
+  onPatientHistory(patientId: string) {
+    this.router.navigate(['/patient', patientId])
+  }
 }
 
 class Patient {
   _id = ''
   username = ''
   dateOfJoining = ''
+  gender = ''
+  dob = ''
+  numRecords = ''
 }
 
 export class DataInput {
   image: { name: string, photoUrl: string }
   age: number
-  gender: 'male' | 'female'
+  gender: string
   isAnticcpPresent: boolean
   anticcpValue: number
   isRfPresent: boolean

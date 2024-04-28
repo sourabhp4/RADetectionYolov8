@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.css'
 })
@@ -14,9 +15,14 @@ export class PatientsComponent {
   message = ''
   isLoaded = false
   patientList: DataUser[] = []
+  currentSearchString = ''
 
   constructor(private http: HttpClient, private router: Router) {
 
+    this.getData ()
+  }
+
+  getData () {
     this.isLoaded = false
     this.message = `Loading the patients data...`
     const httpOptions = {
@@ -29,7 +35,7 @@ export class PatientsComponent {
     const userToken = localStorage.getItem('userToken')
 
     if (userToken) {
-      this.http.post('http://127.0.0.1:5000/patients', { userToken }, httpOptions).subscribe((res: any) => {
+      this.http.post('http://127.0.0.1:5000/patients', { userToken, searchString: this.currentSearchString }, httpOptions).subscribe((res: any) => {
         if (res.status === 401) {
           this.message = 'Unauthorized... Please Login again... Redirecting...'
           setTimeout(() => {
@@ -51,6 +57,39 @@ export class PatientsComponent {
       }, 1500)
     }
   }
+
+  onSearchChange(event: any) {
+    let value: string = event?.target?.value
+
+    this.currentSearchString = value
+
+    this.getData()
+  }
+
+  getAgeFromDOB(dob: string): number {
+    // Convert DOB string to Date object
+    const dobDate = new Date(dob);
+
+    // Get current date
+    const currentDate = new Date();
+
+    // Calculate age
+    let age = currentDate.getFullYear() - dobDate.getFullYear();
+
+    // Check if birthday has occurred this year
+    const currentMonth = currentDate.getMonth();
+    const dobMonth = dobDate.getMonth();
+
+    if (currentMonth < dobMonth || (currentMonth === dobMonth && currentDate.getDate() < dobDate.getDate())) {
+      age--; // Subtract 1 if birthday hasn't occurred yet
+    }
+
+    return age;
+  }
+
+  onClickPatient(patientId: string) {
+    this.router.navigate(['/patient', patientId])
+  }
 }
 
 class DataUser {
@@ -60,4 +99,7 @@ class DataUser {
   dateOfJoining = ''
   numRecords = ''
   status = ''
+  gender = ''
+  dob = ''
+  age = ''
 }

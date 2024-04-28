@@ -1,7 +1,5 @@
 
 <div class="history-content-patient-data">
-    <p>Age: <span>{{prediction.age}} (Years)</span></p>
-    <p>Gender: <span>{{prediction.gender}}</span></p>
     <p>Duration of Symptoms: <span>{{prediction.affectDuration}} (Weeks)</span></p>
     <p *ngIf="prediction.isAnticcpPresent">AntiCCP Value: <span>{{prediction.anticcpValue}} (EU/mL)</span></p>
     <p *ngIf="prediction.isRfPresent">RF Value: <span>{{prediction.rfValue}} (IU/mL)</span></p>

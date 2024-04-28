@@ -1,0 +1,79 @@
+<section id="patient">
+    <h1>Past Predictions of the selected patient</h1>
+    <p class="patient-message">{{message}}</p>
+    <div *ngIf="isLoaded" class="patient-details1-div">
+        <svg height="60px" width="80px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.671 60.671" xml:space="preserve" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <g>
+                    <g>
+                        <ellipse style="fill:#010002;" cx="30.336" cy="12.097" rx="11.997" ry="12.097"></ellipse>
+                        <path style="fill:#010002;"
+                            d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9 C48.354,35.818,42.661,30.079,35.64,30.079z">
+                        </path>
+                    </g>
+                </g>
+            </g>
+        </svg>
+        <div class="patient-details1">
+            <p>Username: <span>{{patientData.username}}</span></p>
+            <p>Gender: <span>{{patientData.gender}}</span></p>
+            <p>Age: <span>{{getAgeFromDOB(patientData.dob)}}</span></p>
+            <p>Date of Registration: <span>{{patientData.dateOfJoining}}</span></p>
+        </div>
+    </div>
+    <h3 *ngIf="isLoaded && historyList.length === 0">No Data Found, Past Records will be available here...</h3>
+    <ul class="patient-list" *ngIf="isLoaded && historyList.length > 0">
+        <li class="patient-list-heading">
+            <p>Sl. No.</p>
+            <p>Date of Prediction</p>
+            <p>Image</p>
+            <p>Details</p>
+        </li>
+        <li *ngFor="let prediction of historyList; index as i;" class="patient-list-row">
+            <div class="patient-list-row1">
+                <p>{{i + 1}}</p>
+                <p>{{prediction.date}}</p>
+                <p><img src={{prediction.image.photoUrl}} alt="image" height="75" width="75"></p>
+                <p (click)="onExtend(i)" *ngIf="!prediction.isExtended" class="patient-details">
+                    <svg fill="#000000" height="20px" width="20px" version="1.1" id="Layer_1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 511.787 511.787" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <path
+                                        d="M508.667,125.707c-4.16-4.16-10.88-4.16-15.04,0L255.76,363.573L18,125.707c-4.267-4.053-10.987-3.947-15.04,0.213 c-3.947,4.16-3.947,10.667,0,14.827L248.293,386.08c4.16,4.16,10.88,4.16,15.04,0l245.333-245.333 C512.827,136.693,512.827,129.867,508.667,125.707z">
+                                    </path>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </p>
+                <p (click)="onCompact(i)" *ngIf="prediction.isExtended" class="patient-details">
+                    <svg fill="#000000" height="20px" width="20px" version="1.1" id="Layer_1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 511.735 511.735" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <path
+                                        d="M508.788,371.087L263.455,125.753c-4.16-4.16-10.88-4.16-15.04,0L2.975,371.087c-4.053,4.267-3.947,10.987,0.213,15.04 c4.16,3.947,10.667,3.947,14.827,0l237.867-237.76l237.76,237.76c4.267,4.053,10.987,3.947,15.04-0.213 C512.734,381.753,512.734,375.247,508.788,371.087z">
+                                    </path>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </p>
+            </div>
+
+            <app-history-content *ngIf="prediction.isExtended" [prediction]="prediction"></app-history-content>
+        </li>
+    </ul>
+</section>

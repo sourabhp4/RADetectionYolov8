@@ -85,8 +85,11 @@
       <div class="form-content-element-row1" *ngIf="currentPatient.username !== ''">
         <h2 class="form-content-element-heading">Selected Patient:</h2>
         <p class="username">Username: <b>{{currentPatient.username}}</b></p>
+        <p class="gender">Gender: <b>{{currentPatient.gender}}</b></p>
+        <p class="age">Age: <b>{{getAgeFromDOB(currentPatient.dob)}}</b></p>
         <p>Date of Registration: <b>{{currentPatient.dateOfJoining}}</b></p>
-        <a href="">Patient History</a>
+        <p>Past Records: <b>{{currentPatient.numRecords}}</b></p>
+        <p class="patient-history-link" (click)="onPatientHistory(currentPatient._id)">Patient History</p>
       </div>
     </div>
     <ul class="form-patients-list-row" *ngIf="isLoaded && patientList">
@@ -94,7 +97,8 @@
       <li *ngFor="let patient of patientList; index as i;">
         <div class="form-patients-list-row1" (click)="onClickPatient(patient)">
           <p class="username">Username: <b>{{patient.username}}</b></p>
-          <p>Date of Registration: <b>{{patient.dateOfJoining}}</b></p>
+          <p>Gender: <b>{{patient.gender}}</b></p>
+          <p>Age: <b>{{getAgeFromDOB(patient.dob)}}</b></p>
         </div>
       </li>
     </ul>
@@ -130,19 +134,6 @@
 
     <div class="form-content-element">
       <h2 class="form-content-element-heading">Serology And Demographic Information</h2>
-
-      <div class="form-content-element-row">
-        <label for="age" class="">Patient's age (In Years)</label>
-        <input type="number" id="age" name="age" [(ngModel)]="dataInputObj.age" class="">
-      </div>
-
-      <div class="form-content-element-row">
-        <label for="gender" class="">Patient's gender</label>
-        <select name="gender" id="gender" class="form-select-gender" (change)="dataInputObj.passGender($event)">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
 
       <div class="form-content-element-row">
         <label for="affectDuration" class="">Duration of Symptoms (In Weeks)</label>

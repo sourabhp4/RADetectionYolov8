@@ -5,10 +5,39 @@
     background-color: var(--section-bg-color);
 }
 
+.patients-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.patients-top-search {
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    margin-right: 3rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.patients-top-search svg {
+    font-size: medium;
+}
+
+.patients-top-search input {
+    border: none;
+}
+
+.patients-top-search input:focus {
+    outline: none;
+}
+
 #patients h1 {
     color: var(--secondary-color);
     text-transform: uppercase;
-    margin-bottom: 2rem;
 }
 
 .patients-type {

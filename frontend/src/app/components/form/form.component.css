@@ -135,7 +135,7 @@
   color: var(--secondary-color);
 }
 
-.form-content-element-patient a{
+.form-content-element-patient .patient-history-link{
   text-decoration: none;
   background-color: var(--primary-color);
   color: var(--secondary-color);
@@ -146,7 +146,7 @@
   margin: 0 auto;
 }
 
-.form-content-element-patient a:hover{
+.form-content-element-patient .patient-history-link:hover{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   transition: all 0.3s ease;
 }
