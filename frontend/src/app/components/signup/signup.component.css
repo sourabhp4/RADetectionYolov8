@@ -1,7 +1,7 @@
 .auth-card {
     width: 50vh;
     min-height: 50vh;
-    margin: 0 auto;
+    margin: 0 auto 3rem auto;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 10px;
     padding: 5rem;
@@ -37,6 +37,19 @@
     padding: 1rem;
     border: 1px solid var(--primary-color);
     border-radius: 10px;
+}
+
+.auth-content select {
+    font-size: 1rem;
+    width: 16rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+}
+
+.auth-content select:focus {
+    border: none;
+    outline: 1px solid var(--primary-color);
 }
 
 .auth-content input:focus {

@@ -5,6 +5,15 @@
         <input type="text" id="username" name="username" [(ngModel)]="username" required>
     </div>
 
+
+    <div class="auth-content">
+        <label for="role">Select your role</label>
+        <select name="role" id="role" #role (change)="onRoleChange(role.value)">
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+        </select>
+    </div>
+
     <div class="auth-content">
         <label for="password">Enter new password</label>
         <input type="password" id="password" name="password" [(ngModel)]="password" required>
@@ -17,11 +26,7 @@
 
     <p class="auth-message">{{message}}</p>
 
-    <button
-        (click)="onSubmit()"
-        class="auth-submit"
-    >SUBMIT</button>
+    <button (click)="onSubmit()" class="auth-submit">SUBMIT</button>
 
     <p class="auth-link-message">Already having an account? <a href="/login">Login</a></p>
 </div>
-

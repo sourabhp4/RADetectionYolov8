@@ -8,9 +8,10 @@ import os
 from dotenv import load_dotenv
 
 from pymongo import MongoClient
-from bson import json_util, ObjectId
+from bson import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
+import jwt
 
 load_dotenv()
 
@@ -406,7 +407,7 @@ def calculateScore(imagePredictions, bloodPredictions, durationPredictions):
     resultScore['category_4'] = calculateCategory_4_Score(durationPredictions)
 
     finalScore = resultScore['category_1']['score'] + resultScore['category_2']['score'] + resultScore['category_3']['score'] + resultScore['category_4']['score']
-    print(finalScore)
+
     resultScore['output']['score'] = finalScore
     if finalScore < scores.get('final-threshold'):
         resultScore['output']['message'] = 'Low chance of patient being RA positive based on the supplied inputs'
@@ -422,30 +423,56 @@ def home():
 #CheckUser Route
 @app.route('/checkuser', methods=['POST'])
 def checkUser():
-    user_data = request.json
-    if not user_data.get('userId'):
-        return jsonify({'error': 'Do SignIn', "status": 400})
-    
-    user = users_collection.find_one({'_id': ObjectId(user_data['userId'])})
+    try:
+        user_data = request.json
+        if not user_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 400})
+        
+        data = jwt.decode(user_data['userToken'], os.environ.get('SECRET_KEY'), algorithms=["HS256"])
 
-    if not user:
-        return jsonify({'error': 'Invalid ID', "status": 401})
-    
-    return jsonify({'message': 'Successfull', "status": 200})
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(data['userId'])})
+
+        if not user:
+            return jsonify({'error': 'Invalid ID', "status": 401})
+        
+        expirationTime = datetime.utcnow() + timedelta(hours = 1)  # Set expiration time to 1 hour from now
+        userToken = jwt.encode(
+            {"userId": str(user["_id"]), "exp": expirationTime},
+            os.environ.get("SECRET_KEY"),
+            algorithm="HS256"
+        )
+        
+        return jsonify({'message': 'Successfull', 'userToken': userToken, 'userRole': user['role'], "status": 200})
+    except Exception as e:
+        print('CheckUser e: ', str(e))
+        return jsonify({'error': 'Something went wrong', "status": 500})
 
 #SignUp Route
 @app.route('/signup', methods=['POST'])
 def signup():
     user_data = request.json
-    if not user_data.get('username') or not user_data.get('password'):
-        return jsonify({'error': 'Username and password are required', "status": 401})
+    if not user_data.get('username') or not user_data.get('password') or not user_data.get('role'):
+        return jsonify({'error': 'Username, role and password are required', "status": 400})
     
     existing_user = users_collection.find_one({'username': user_data['username']})
     if existing_user:
         return jsonify({'error': 'Username already exists', "status": 401})
     
+    if user_data.get('role') != 'patient' and user_data.get('role') != 'doctor':
+        return jsonify({'error': 'Unknown role', "status": 400})
+
     # Hash the password before storing it
     user_data['password'] = generate_password_hash(user_data['password'])
+    user_data['status'] = 'unavailable'
+    user_data['dateOfJoining'] = datetime.now()
     user_insert_result = users_collection.insert_one(user_data)
     
     # Retrieve the inserted document's _id
@@ -464,7 +491,16 @@ def login():
     if not user or not check_password_hash(user['password'], login_data['password']):
         return jsonify({'error': 'Invalid username or password', "status": 401})
     
-    return jsonify({'message': 'Login successful', 'userId': str(user['_id']), "status": 200})
+    if user['role'] == 'doctor' and user['status'] != 'approved':
+        return jsonify({'error': 'Pending approval, Please contact admin.', "status": 401})
+    
+    expirationTime = datetime.utcnow() + timedelta(hours = 1)  # Set expiration time to 1 hour from now
+    userToken = jwt.encode(
+        {"userId": str(user["_id"]), "exp": expirationTime},
+        os.environ.get("SECRET_KEY"),
+        algorithm="HS256"
+    )
+    return jsonify({'message': 'Login successful', 'userToken': str(userToken), 'userRole': user['role'], "status": 200})
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -548,8 +584,112 @@ def history():
 
     except Exception as e:
         print(f"Error handling history request: {e}")
-        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
+        return jsonify({"error": "Something went wrong", "status": 500})
 
+@app.route("/users", methods=["POST"])
+def users():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'admin'}, { 'password': 0 })
+
+        if not user:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        if req_data['presentRole'] == 'patient':
+            patientList = list(users_collection.find({ 'role': 'patient' }, { 'password': 0 }))
+            for patient in patientList:
+                patient['_id'] = str(patient['_id'])
+                patient['numRecords'] = predictions_collection.count_documents({ 'patientId': patient['_id'] })
+            return jsonify({"userList": patientList, "status": 200})
+        if req_data['presentRole'] == 'doctor':
+            doctorList = list(users_collection.find({ 'role': 'doctor' }, { 'password': 0 }))
+            for doctor in doctorList:
+                doctor['_id'] = str(doctor['_id'])
+                doctor['numRecords'] = predictions_collection.count_documents({ 'doctorId': doctor['_id'] })
+            return jsonify({"userList": doctorList, "status": 200})
+        else:
+            return jsonify({"userList": [], "status": 200})
+
+    except Exception as e:
+        print(f"Error handling users request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
+
+@app.route("/approvedoctor", methods=["POST"])
+def approvedoctor():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken') and not req_data.get('doctorId'):
+            return jsonify({'error': 'Too few params in the request', "status": 400})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        admin = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'admin'}, { 'password': 0 })
+
+        if not admin:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+
+        result = users_collection.update_one({'_id': ObjectId(req_data['doctorId']), 'role': 'doctor'}, {'$set': {'status': 'approved'}})
+        if result.modified_count == 1:
+            return jsonify({'message': 'Success', 'status': 200})
+        else:
+            return jsonify({'error': 'Failed to update doctor status, Please try again later', 'status': 500})
+
+    except Exception as e:
+        print(f"Error handling approvedoctor request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
+
+@app.route("/patients", methods=["POST"])
+def patients():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        user = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not user:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        patientList = list(users_collection.find({ 'role': 'patient' }, { 'password': 0 }))
+        for patient in patientList:
+            patient['_id'] = str(patient['_id'])
+            patient['numRecords'] = predictions_collection.count_documents({ 'patientId': patient['_id'] })
+        return jsonify({"patientList": patientList, "status": 200})
+
+    except Exception as e:
+        print(f"Error handling users request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
 
 if __name__ == "__main__":
     app.run(debug=True)

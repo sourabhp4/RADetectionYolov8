@@ -1,0 +1,34 @@
+<section id="users">
+    <h1>Users</h1>
+    <div class="users-type">
+        <h4>Select user type</h4>
+        <select name="user-type" id="user-type" #userType (change)="onRoleChange(userType.value)">
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+        </select>
+    </div>
+    <p class="users-message">{{message}}</p>
+    <h3 *ngIf="isLoaded && userList && userList.length === 0">No Data Found, Present Users and Doctors list will be available here...</h3>
+    <ul class="users-list" *ngIf="isLoaded && userList && userList.length !== 0">
+        <li class="users-list-heading">
+            <p>Sl. No.</p>
+            <p>Username</p>
+            <p>Date of Registration</p>
+            <p *ngIf="presentRole === 'patient'">No. of Records</p>
+            <p *ngIf="presentRole === 'doctor'">No. of Consultations</p>
+            <p *ngIf="presentRole === 'doctor'"></p>
+        </li>
+        <li *ngFor="let user of userList; index as i;" class="users-list-row">
+            <div class="users-list-row1">
+                <p class="slNo">{{i + 1}}</p>
+                <p class="username">{{user.username}}</p>
+                <p >{{user.dateOfJoining}}</p>
+                <p >{{user.numRecords}}</p>
+                <p class="approveRole" *ngIf="presentRole === 'doctor'">
+                    <span *ngIf="user.status === 'approved'">Approved</span>
+                    <button (click)="approveDoctor(user._id)" *ngIf="user.status !== 'approved'">Approve as Doctor</button>
+                </p>
+            </div>
+        </li>
+    </ul>
+</section>

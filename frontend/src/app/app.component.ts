@@ -18,7 +18,7 @@ export class AppComponent {
   checkFlag:boolean
   currentRoute = ''
 
-  privateRoutes = ['/', '', '/form', '/history']
+  privateRoutes = ['/', '', '/form', '/history', 'users', 'patients']
   publicRoutes = ['/signup', '/login']
 
   constructor(private http: HttpClient, private router: Router) {
@@ -39,14 +39,15 @@ export class AppComponent {
       if (this.publicRoutes.includes(event.url)) {
         this.checkFlag = false
       } else if (this.privateRoutes.includes(event.url)) {
-        const userId = localStorage.getItem('userId')
+        const userToken = localStorage.getItem('userToken')
 
-        if (userId) {
-          this.http.post('http://127.0.0.1:5000/checkuser', { userId }, httpOptions).subscribe((res: any) => {
-
+        if (userToken) {
+          this.http.post('http://127.0.0.1:5000/checkuser', { userToken }, httpOptions).subscribe((res: any) => {
             if (res.status !== 200) {
               this.router.navigate(['/login'])
             } else {
+              localStorage.setItem('userToken', res.userToken)
+              localStorage.setItem('role', res.userRole)
               this.checkFlag = true
             }
           })

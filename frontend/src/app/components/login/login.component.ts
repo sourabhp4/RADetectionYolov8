@@ -19,8 +19,9 @@ export class LoginComponent {
     this.username = ''
     this.password = ''
 
-    if (localStorage.getItem('userId')){
-      localStorage.removeItem('userId')
+    if (localStorage.getItem('userToken')){
+      localStorage.removeItem('userToken')
+      localStorage.removeItem('role')
     }
   }
 
@@ -43,7 +44,8 @@ export class LoginComponent {
         this.message = res.error
       } else {
         this.message = 'Login Successful... Redirecting...'
-        localStorage.setItem('userId', res.userId)
+        localStorage.setItem('userToken', res.userToken)
+        localStorage.setItem('role', res.userRole)
         setTimeout(() => {
           this.router.navigate(['/'])
         }, 2000)

@@ -12,12 +12,14 @@ import { Router } from '@angular/router';
 })
 export class SignupComponent {
   username: string
+  role: string
   password: string
   rePassword: string
   message = ''
 
   constructor(private http: HttpClient, private router: Router) {
     this.username = ''
+    this.role = 'patient'
     this.password = ''
     this.rePassword = ''
     
@@ -44,7 +46,7 @@ export class SignupComponent {
       })
     }
 
-    this.http.post('http://127.0.0.1:5000/signup', { username: this.username, password: this.password }, httpOptions).subscribe((res: any) => {
+    this.http.post('http://127.0.0.1:5000/signup', { username: this.username, password: this.password, role: this.role }, httpOptions).subscribe((res: any) => {
       if (res.status && res.status !== 200) {
         this.message = res.error
       } else {
@@ -55,5 +57,9 @@ export class SignupComponent {
         }, 1000)
       }
     })
+  }
+
+  onRoleChange(role: string) {
+    this.role = role
   }
 }

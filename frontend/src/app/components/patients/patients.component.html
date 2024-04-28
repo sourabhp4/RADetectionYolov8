@@ -1,0 +1,21 @@
+<section id="patients">
+    <h1>Patients</h1>
+    <p class="patients-message">{{message}}</p>
+    <h3 *ngIf="isLoaded && patientList && patientList.length === 0">No Data Found, Present patients and Doctors list will be available here...</h3>
+    <ul class="patients-list" *ngIf="isLoaded && patientList && patientList.length !== 0">
+        <li class="patients-list-heading">
+            <p>Sl. No.</p>
+            <p>Username</p>
+            <p>Date of Registration</p>
+            <p>No. of Records</p>
+        </li>
+        <li *ngFor="let user of patientList; index as i;" class="patients-list-row">
+            <div class="patients-list-row1">
+                <p class="slNo">{{i + 1}}</p>
+                <p class="username">{{user.username}}</p>
+                <p >{{user.dateOfJoining}}</p>
+                <p >{{user.numRecords}}</p>
+            </div>
+        </li>
+    </ul>
+</section>
