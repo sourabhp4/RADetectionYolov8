@@ -3,11 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistoryContentComponent } from '../history-content/history-content.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-patient',
   standalone: true,
-  imports: [CommonModule, HistoryContentComponent],
+  imports: [CommonModule, HistoryContentComponent, FormsModule],
   templateUrl: './patient.component.html',
   styleUrl: './patient.component.css'
 })
@@ -19,8 +20,17 @@ export class PatientComponent implements OnInit {
   patientId = ''
   patientData:Patient = new Patient()
 
+  userToken: any
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Accept': "Application/json",
+      "Content-Type": "Application/json"
+    })
+  }
+
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     
+    this.userToken = localStorage.getItem('userToken')
   }
 
   ngOnInit(): void {
@@ -31,17 +41,9 @@ export class PatientComponent implements OnInit {
   }
 
   getData(patientId: string) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Accept': "Application/json",
-        "Content-Type": "Application/json"
-      })
-    }
-
-    const userToken = localStorage.getItem('userToken')
-
-    if (userToken) {
-      this.http.post('http://127.0.0.1:5000/getpatientdetails', { userToken, patientId }, httpOptions).subscribe((res: any) => {
+    
+    if (this.userToken) {
+      this.http.post('http://127.0.0.1:5000/getpatientdetails', { userToken: this.userToken, patientId }, this.httpOptions).subscribe((res: any) => {
 
         if (res.status !== 200) {
           this.message = res.error
@@ -50,7 +52,6 @@ export class PatientComponent implements OnInit {
           this.historyList = res.historyList
           this.patientData = res.patientData
           this.isLoaded = true
-          console.log(res)
         }
       })
     }
@@ -83,6 +84,52 @@ export class PatientComponent implements OnInit {
     }
 
     return age;
+  }
+
+  onCommentSubmit (event:any, i: number) {
+    event?.preventDefault()
+
+    this.historyList[i].commentMessage = 'Processing the request...'
+
+    if (this.userToken) {
+      this.http.post('http://127.0.0.1:5000/addcomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].comment }, this.httpOptions).subscribe((res: any) => {
+        if (res.status !== 200) {
+          this.historyList[i].commentMessage = res.error
+        } else {
+          this.historyList[i].commentMessage = 'Successfully added comment. Fetching updated records...'
+          setTimeout(() => {
+            this.getData(this.patientId)
+          }, 1000)
+        }
+      })
+    }
+  }
+
+  onUpdateCommentSubmit (event:any, i: number) {
+    event?.preventDefault()
+
+    this.historyList[i].commentMessage = 'Processing the request...'
+
+    if (this.userToken) {
+      this.http.post('http://127.0.0.1:5000/updatecomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].comment, commentId: this.historyList[i].commentId }, this.httpOptions).subscribe((res: any) => {
+        if (res.status !== 200) {
+          this.historyList[i].commentMessage = res.error
+        } else {
+          this.historyList[i].commentMessage = 'Successfully updated comment. Fetching updated records...'
+          setTimeout(() => {
+            this.getData(this.patientId)
+          }, 1000)
+        }
+      })
+    }
+  }
+
+  onEditPress (i: number) {
+    this.historyList[i].isCommentEditable = true
+  }
+
+  onCancelPress (i: number) {
+    this.historyList[i].isCommentEditable = false
   }
 }
 
@@ -117,6 +164,14 @@ class DataOutput {
   resultScore: DataOutputScore = new DataOutputScore()
   isExtended = false
   _id = ''
+  consultedBy = ''
+  lastEditedByUsername = ''
+  lastEditedOn = ''
+  comment = ''
+  isCommentPresent = false
+  commentId = ''
+  commentMessage = ''
+  isCommentEditable = false
 
   constructor() {
     this.image = { name: '', photoUrl: '' }

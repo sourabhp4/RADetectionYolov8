@@ -92,6 +92,7 @@ client = MongoClient(os.environ.get('MONGO_URI'))
 db = client['godproject']
 users_collection = db['users']
 predictions_collection = db['predictions']
+comments_collection = db['comments']
 
 def process_image(image):
 
@@ -459,61 +460,69 @@ def checkUser():
 #SignUp Route
 @app.route('/signup', methods=['POST'])
 def signup():
-    user_data = request.json
-    if not user_data.get('username') or not user_data.get('password') or not user_data.get('role'):
-        return jsonify({'error': 'Username, role and password are required', "status": 400})
-    
-    existing_user = users_collection.find_one({'username': user_data['username']})
-    if existing_user:
-        return jsonify({'error': 'Username already exists', "status": 401})
-    
-    if user_data.get('role') != 'patient' and user_data.get('role') != 'doctor':
-        return jsonify({'error': 'Unknown role', "status": 400})
-    
-    print(user_data)
-
-    if user_data.get('role') == 'patient':
-        dob_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')  # Regex pattern for dd-mm-yyyy format
-        dob = user_data.get('dob', '')
+    try:
+        user_data = request.json
+        if not user_data.get('username') or not user_data.get('password') or not user_data.get('role'):
+            return jsonify({'error': 'Username, role and password are required', "status": 400})
         
-        if not dob_pattern.match(dob):
-            return jsonify({'error': 'Provide valid date of birth in dd-mm-yyyy format', 'status': 400})
+        existing_user = users_collection.find_one({'username': user_data['username']})
+        if existing_user:
+            return jsonify({'error': 'Username already exists', "status": 401})
+        
+        if user_data.get('role') != 'patient' and user_data.get('role') != 'doctor':
+            return jsonify({'error': 'Unknown role', "status": 400})
+        
+        print(user_data)
 
-        if user_data.get('gender') != 'male' and user_data.get('gender') != 'female':
-            return jsonify({'error': 'Gender can only be male or female', "status": 400})
+        if user_data.get('role') == 'patient':
+            dob_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')  # Regex pattern for dd-mm-yyyy format
+            dob = user_data.get('dob', '')
+            
+            if not dob_pattern.match(dob):
+                return jsonify({'error': 'Provide valid date of birth in dd-mm-yyyy format', 'status': 400})
 
-    # Hash the password before storing it
-    user_data['password'] = generate_password_hash(user_data['password'])
-    user_data['status'] = 'unavailable'
-    user_data['dateOfJoining'] = datetime.now()
-    user_insert_result = users_collection.insert_one(user_data)
-    
-    # Retrieve the inserted document's _id
-    inserted_id = user_insert_result.inserted_id
-    
-    return jsonify({'message': 'User created successfully', 'userId': str(inserted_id), "status": 200})
+            if user_data.get('gender') != 'male' and user_data.get('gender') != 'female':
+                return jsonify({'error': 'Gender can only be male or female', "status": 400})
+
+        # Hash the password before storing it
+        user_data['password'] = generate_password_hash(user_data['password'])
+        user_data['status'] = 'unavailable'
+        user_data['dateOfJoining'] = datetime.now()
+        user_insert_result = users_collection.insert_one(user_data)
+        
+        # Retrieve the inserted document's _id
+        inserted_id = user_insert_result.inserted_id
+        
+        return jsonify({'message': 'User created successfully', 'userId': str(inserted_id), "status": 200})
+    except Exception as e:
+        print(f"Error handling signup request: {e}")
+        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
 
 # Login route
 @app.route('/login', methods=['POST'])
 def login():
-    login_data = request.json
-    if not login_data.get('username') or not login_data.get('password'):
-        return jsonify({'error': 'Username and password are required', "status": 400})
-    
-    user = users_collection.find_one({'username': login_data['username']})
-    if not user or not check_password_hash(user['password'], login_data['password']):
-        return jsonify({'error': 'Invalid username or password', "status": 401})
-    
-    if user['role'] == 'doctor' and user['status'] != 'approved':
-        return jsonify({'error': 'Pending approval, Please contact admin.', "status": 401})
-    
-    expirationTime = datetime.utcnow() + timedelta(hours = 1)  # Set expiration time to 1 hour from now
-    userToken = jwt.encode(
-        {"userId": str(user["_id"]), "exp": expirationTime},
-        os.environ.get("SECRET_KEY"),
-        algorithm="HS256"
-    )
-    return jsonify({'message': 'Login successful', 'userToken': str(userToken), 'userRole': user['role'], "status": 200})
+    try:
+        login_data = request.json
+        if not login_data.get('username') or not login_data.get('password'):
+            return jsonify({'error': 'Username and password are required', "status": 400})
+        
+        user = users_collection.find_one({'username': login_data['username']})
+        if not user or not check_password_hash(user['password'], login_data['password']):
+            return jsonify({'error': 'Invalid username or password', "status": 401})
+        
+        if user['role'] == 'doctor' and user['status'] != 'approved':
+            return jsonify({'error': 'Pending approval, Please contact admin.', "status": 401})
+        
+        expirationTime = datetime.utcnow() + timedelta(hours = 1)  # Set expiration time to 1 hour from now
+        userToken = jwt.encode(
+            {"userId": str(user["_id"]), "exp": expirationTime},
+            os.environ.get("SECRET_KEY"),
+            algorithm="HS256"
+        )
+        return jsonify({'message': 'Login successful', 'userToken': str(userToken), 'userRole': user['role'], "status": 200})
+    except Exception as e:
+        print(f"Error handling login request: {e}")
+        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -728,7 +737,7 @@ def patients():
         return jsonify({"patientList": patientList, "status": 200})
 
     except Exception as e:
-        print(f"Error handling users request: {e}")
+        print(f"Error handling patients request: {e}")
         return jsonify({"error": "Something went wrong", "status": 500})
 
 @app.route("/getpatients", methods=["POST"])
@@ -770,7 +779,7 @@ def getPatients():
         return jsonify({"patientList": patientList, "status": 200})
 
     except Exception as e:
-        print(f"Error handling users request: {e}")
+        print(f"Error handling getpatients request: {e}")
         return jsonify({"error": "Something went wrong", "status": 500})
 
 @app.route("/getpatientdetails", methods=["POST"])
@@ -800,17 +809,134 @@ def getPatientDetails():
         if not patient:
             return jsonify({'error': 'Bad Request', "status": 400})
 
-        historyList = list(predictions_collection.find({ 'patientId': req_data['patientId'] }))
+        historyList = list(predictions_collection.find({ 'patientId': req_data['patientId'] }).sort('date', -1))
         for history in historyList:
             history['_id'] = str(history['_id'])
-        
+            doctor = users_collection.find_one({ '_id': ObjectId(history['doctorId']) }, { 'password': 0 })
+            history['consultedBy'] = doctor.get('username', 'Unavailable')
+            comment = comments_collection.find_one({ 'predictionId': str(history['_id']) })
+            if comment:
+                history['comment'] = comment['comment']
+                history['lastEditedByUsername'] = comment['lastEditedByUsername']
+                history['lastEditedById'] = comment['lastEditedById']
+                history['lastEditedOn'] = comment['lastEditedOn']
+                history['commentId'] = str(comment['_id'])
+                history['isCommentPresent'] = True
+            else:
+                history['isCommentPresent'] = False
+
         patient['_id'] = str(patient['_id'])
 
         return jsonify({"patientData": patient, 'historyList': historyList, "status": 200})
 
     except Exception as e:
-        print(f"Error handling users request: {e}")
+        print(f"Error handling getpatientdetails request: {e}")
         return jsonify({"error": "Something went wrong", "status": 500})
 
+@app.route("/addcomment", methods=["POST"])
+def addComment():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not doctor:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        if not req_data['comment']:
+            return jsonify({'error': 'Comment is required', "status": 400})
+        
+        if not req_data['predictionId']:
+            return jsonify({'error': 'Insufficient request', "status": 400})
+        
+        prediction = predictions_collection.find_one({'_id': ObjectId(req_data.get('predictionId'))})
+
+        if not prediction:
+            return jsonify({'error': 'Bad Request', "status": 400})
+
+        pastComment = comments_collection.find_one({'predictionId': req_data.get('predictionId')})
+        if pastComment:
+            return jsonify({'error': 'Already comment exists', "status": 400})
+        
+        comment = {}
+        comment['predictionId'] = str(req_data['predictionId'])
+        comment['comment'] = req_data['comment']
+        comment['lastEditedByUsername'] = doctor['username']
+        comment['lastEditedById'] = str(doctor['_id'])
+        comment['lastEditedOn'] = datetime.now()
+        
+        comments_collection.insert_one(comment)
+
+        return jsonify({"message": 'success', "status": 200})
+
+    except Exception as e:
+        print(f"Error handling addcomment request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
+
+@app.route("/updatecomment", methods=["POST"])
+def updateComment():
+    try:
+        req_data = request.json
+        if not req_data.get('userToken'):
+            return jsonify({'error': 'Do SignIn', "status": 401})
+        
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+
+        if not doctor:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        if not req_data['comment']:
+            return jsonify({'error': 'Comment is required', "status": 400})
+        
+        if not req_data['predictionId']:
+            return jsonify({'error': 'Insufficient request', "status": 400})
+        
+        prediction = predictions_collection.find_one({'_id': ObjectId(req_data.get('predictionId'))})
+
+        if not prediction:
+            return jsonify({'error': 'Bad Request', "status": 400})
+
+        pastComment = comments_collection.find_one({'predictionId': req_data.get('predictionId')})
+        if not pastComment:
+            return jsonify({'error': 'Comment does not exists to update', "status": 400})
+        
+        result = comments_collection.update_one({'_id': ObjectId(req_data['commentId'])}, 
+                                                {'$set': {
+                                                    'comment': req_data['comment'],
+                                                    'lastEditedByUsername': doctor['username'],
+                                                    'lastEditedById': data['userId'],
+                                                    'lastEditedOn': datetime.now()
+                                                    }})
+        if result.modified_count == 1:
+            return jsonify({'message': 'Success', 'status': 200})
+        else:
+            return jsonify({'error': 'Failed to update comment, Please try again later', 'status': 500})
+
+    except Exception as e:
+        print(f"Error handling updatecomment request: {e}")
+        return jsonify({"error": "Something went wrong", "status": 500})
+    
 if __name__ == "__main__":
     app.run(debug=True)

@@ -28,6 +28,7 @@
     <ul class="patient-list" *ngIf="isLoaded && historyList.length > 0">
         <li class="patient-list-heading">
             <p>Sl. No.</p>
+            <p>Consulted By</p>
             <p>Date of Prediction</p>
             <p>Image</p>
             <p>Details</p>
@@ -35,6 +36,7 @@
         <li *ngFor="let prediction of historyList; index as i;" class="patient-list-row">
             <div class="patient-list-row1">
                 <p>{{i + 1}}</p>
+                <p>{{prediction.consultedBy}}</p>
                 <p>{{prediction.date}}</p>
                 <p><img src={{prediction.image.photoUrl}} alt="image" height="75" width="75"></p>
                 <p (click)="onExtend(i)" *ngIf="!prediction.isExtended" class="patient-details">
@@ -74,6 +76,46 @@
             </div>
 
             <app-history-content *ngIf="prediction.isExtended" [prediction]="prediction"></app-history-content>
+            <div class="patient-comment" *ngIf="prediction.isExtended">
+                <h3>COMMENT</h3>
+                <form *ngIf="!prediction.isCommentPresent" (submit)="onCommentSubmit($event, i)"
+                    class="patient-comment-message">
+                    <textarea name="comment" id="comment1" cols="80" rows="10" placeholder="Enter comment here" required
+                        [(ngModel)]="prediction.comment"></textarea>
+                    <p class="patient-message">{{prediction.commentMessage}}</p>
+                    <button type="submit" class="patient-comment-message-button">Submit</button>
+                </form>
+                <form *ngIf="prediction.isCommentPresent" (submit)="onUpdateCommentSubmit($event, i)"
+                    class="patient-comment-message">
+                    <p>Last Edited by: <b>{{prediction.lastEditedByUsername}}</b></p>
+                    <p>Last Edited on: <b>{{prediction.lastEditedOn}}</b></p>
+                    <button class="patient-comment-edit" *ngIf="!prediction.isCommentEditable"
+                        (click)="onEditPress(i)">
+                        <svg class="feather feather-edit" fill="none" height="24" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                            width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Edit
+                    </button>
+                    <button class="patient-comment-edit" *ngIf="prediction.isCommentEditable"
+                        (click)="onCancelPress(i)">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24"
+                            viewBox="0 0 50 50">
+                            <path
+                                d="M 25 2 C 12.309534 2 2 12.309534 2 25 C 2 37.690466 12.309534 48 25 48 C 37.690466 48 48 37.690466 48 25 C 48 12.309534 37.690466 2 25 2 z M 25 4 C 36.609534 4 46 13.390466 46 25 C 46 36.609534 36.609534 46 25 46 C 13.390466 46 4 36.609534 4 25 C 4 13.390466 13.390466 4 25 4 z M 32.990234 15.986328 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414062 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414062 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.990234 15.986328 z">
+                            </path>
+                        </svg>
+                        Cancel
+                    </button>
+                    <textarea name="comment" id="comment2" cols="80" rows="10" placeholder="Enter comment here" required
+                        [(ngModel)]="prediction.comment" [readonly]="!prediction.isCommentEditable"></textarea>
+
+                    <p class="patient-message">{{prediction.commentMessage}}</p>
+                    <button type="submit" class="patient-comment-message-button" *ngIf="prediction.isCommentEditable">Submit</button>
+                </form>
+            </div>
         </li>
     </ul>
 </section>

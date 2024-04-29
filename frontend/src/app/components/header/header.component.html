@@ -14,6 +14,6 @@
     <li><a href="/history" *ngIf="userRole && userRole === 'patient'">History</a></li>
     <li><a href="/patients" *ngIf="userRole && userRole === 'doctor'">Patients</a></li>
     <a href="/form" *ngIf="userRole && userRole === 'doctor'"><button class="button">Get Started</button></a>
-    <button class="button" (click)="onlogout()">Logout</button>
+    <a href="/login"><button class="button">Logout</button></a>
   </ul>
 </nav>

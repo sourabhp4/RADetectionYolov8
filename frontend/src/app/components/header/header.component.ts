@@ -17,9 +17,4 @@ export class HeaderComponent {
     this.userRole = localStorage.getItem('role') || ''
   }
 
-  onlogout () {
-    localStorage.removeItem('userToken')
-    localStorage.removeItem('role')
-    window.location.reload()
-  }
 }

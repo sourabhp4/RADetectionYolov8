@@ -17,6 +17,7 @@
   opacity: 90%;
   border: none;
   transition: all 0.4s ease;
+  margin: 0 1rem;
 }
 
 .carousel-arrow:hover {

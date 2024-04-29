@@ -43,6 +43,7 @@
 .patient-list {
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .patient-list li {
@@ -89,4 +90,67 @@
 .patient-details>svg:hover {
     transform: scale(1.3);
     transition: all 0.5s ease;
+}
+
+.patient-comment {
+    padding: 1rem;
+}
+
+.patient-comment-edit {
+    display: flex;
+    padding: 0.5rem 2rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    width: max-content;
+}
+
+.patient-comment-edit:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.3s ease;
+    background-color: var(--primary-color);
+}
+
+.patient-comment-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.patient-comment-message textarea{
+    margin-top: 1rem;
+    border: 1px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: 10px;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.patient-comment-message textarea:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.patient-comment-message-button {
+    border: none;
+    background-color: var(--primary-color);
+    padding: 0.5rem 2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    width: 40%;
+}
+
+.patient-comment-message-button:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.3s ease;
+}
+
+.patient-comment-message p {
+    color: gray;
 }
