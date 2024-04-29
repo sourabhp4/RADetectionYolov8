@@ -1,19 +1,42 @@
 <section id="history">
-    <h1>Past Predictions</h1>
+    <h1>Your medical records</h1>
     <p class="history-message">{{message}}</p>
-    <h3 *ngIf="isLoaded && predictionList.length === 0">No Data Found, Predictions made by you, will be available here...</h3>
-    <ul class="history-list" *ngIf="isLoaded && predictionList.length > 0">
+    <div *ngIf="isLoaded" class="history-details1-div">
+        <svg height="60px" width="80px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.671 60.671" xml:space="preserve" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <g>
+                    <g>
+                        <ellipse style="fill:#010002;" cx="30.336" cy="12.097" rx="11.997" ry="12.097"></ellipse>
+                        <path style="fill:#010002;"
+                            d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9 C48.354,35.818,42.661,30.079,35.64,30.079z">
+                        </path>
+                    </g>
+                </g>
+            </g>
+        </svg>
+        <div class="history-details1">
+            <p>Username: <span>{{patientData.username}}</span></p>
+            <p>Gender: <span>{{patientData.gender}}</span></p>
+            <p>Age: <span>{{getAgeFromDOB(patientData.dob)}}</span></p>
+            <p>Date of Registration: <span>{{patientData.dateOfJoining}}</span></p>
+        </div>
+    </div>
+    <h3 *ngIf="isLoaded && historyList.length === 0">No Data Found, Past Records will be available here...</h3>
+    <ul class="history-list" *ngIf="isLoaded && historyList.length > 0">
         <li class="history-list-heading">
             <p>Sl. No.</p>
-            <p>Patient ID</p>
+            <p>Consulted By</p>
             <p>Date of Prediction</p>
             <p>Image</p>
             <p>Details</p>
         </li>
-        <li *ngFor="let prediction of predictionList; index as i;" class="history-list-row">
+        <li *ngFor="let prediction of historyList; index as i;" class="history-list-row">
             <div class="history-list-row1">
                 <p>{{i + 1}}</p>
-                <p>{{prediction.patientId}}</p>
+                <p>{{prediction.consultedBy}}</p>
                 <p>{{prediction.date}}</p>
                 <p><img src={{prediction.image.photoUrl}} alt="image" height="75" width="75"></p>
                 <p (click)="onExtend(i)" *ngIf="!prediction.isExtended" class="history-details">
@@ -53,6 +76,21 @@
             </div>
 
             <app-history-content *ngIf="prediction.isExtended" [prediction]="prediction"></app-history-content>
+            <div class="history-comment" *ngIf="prediction.isExtended">
+                <h3>COMMENT</h3>
+                
+                <div *ngIf="prediction.isCommentPresent"
+                    class="history-comment-message">
+                    <p>Last Edited by: <b>{{prediction.lastEditedByUsername}}</b></p>
+                    <p>Last Edited on: <b>{{prediction.lastEditedOn}}</b></p>
+                    <textarea name="comment" id="comment2" cols="80" rows="10" required
+                        [value]="prediction.comment" readonly></textarea>
+                </div>
+                <div *ngIf="!prediction.isCommentPresent"
+                    class="history-comment-message">
+                    <p>No comment found</p>
+                </div>
+            </div>
         </li>
     </ul>
 </section>

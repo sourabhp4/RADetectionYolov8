@@ -609,19 +609,44 @@ def predict():
 def history():
     try:
         req_data = request.json
-        if not req_data.get('userId'):
+        if not req_data.get('userToken'):
             return jsonify({'error': 'Do SignIn', "status": 401})
         
-        user = users_collection.find_one({'_id': ObjectId(req_data['userId'])})
+        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
 
-        if not user:
-            return jsonify({'error': 'Invalid UserID', "status": 401})
+        # Check if the expiration time is in the past
+        if "exp" in data:
+            exp_datetime = datetime.fromtimestamp(data["exp"])
+            if exp_datetime < datetime.utcnow():
+                return jsonify({'error': 'Expired Token', "status": 401})
+        else:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
+        patient = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'patient'}, { 'password': 0 })
 
-        predictionList = list(predictions_collection.find({ 'userId': req_data['userId'] }))
-        for prediction in predictionList:
-            prediction['_id'] = str(prediction['_id'])
+        if not patient:
+            return jsonify({'error': 'Unauthorized', "status": 401})
+        
 
-        return jsonify({"predictionList": predictionList, "status": 200})
+        historyList = list(predictions_collection.find({ 'patientId': data['userId'] }).sort('date', -1))
+        for history in historyList:
+            history['_id'] = str(history['_id'])
+            doctor = users_collection.find_one({ '_id': ObjectId(history['doctorId']) }, { 'password': 0 })
+            history['consultedBy'] = doctor.get('username', 'Unavailable')
+            comment = comments_collection.find_one({ 'predictionId': str(history['_id']) })
+            if comment:
+                history['comment'] = comment['comment']
+                history['lastEditedByUsername'] = comment['lastEditedByUsername']
+                history['lastEditedById'] = comment['lastEditedById']
+                history['lastEditedOn'] = comment['lastEditedOn']
+                history['commentId'] = str(comment['_id'])
+                history['isCommentPresent'] = True
+            else:
+                history['isCommentPresent'] = False
+
+        patient['_id'] = str(patient['_id'])
+
+        return jsonify({"patientData": patient, 'historyList': historyList, "status": 200})
 
     except Exception as e:
         print(f"Error handling history request: {e}")

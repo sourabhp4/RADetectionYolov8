@@ -24,6 +24,11 @@
     background-color: var(--white-color);
     color: var(--secondary-color);
   }
+
+  .image-canvas {
+    width: 700px;
+    height: 700px;
+  }
   
   .image-canvas-output {
     width: 20rem;

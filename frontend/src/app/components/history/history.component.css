@@ -11,15 +11,39 @@
     margin-bottom: 2rem;
 }
 
-.history-message, #history h3 {
+.history-message,
+#history h3 {
     text-align: center;
     font-size: larger;
     color: var(--secondary-color);
 }
 
+.history-details1-div {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.history-details1 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.history-details1 p {
+    color: var(--secondary-color);
+}
+
+.history-details1 p span {
+    color: var(--dark-color);
+}
+
 .history-list {
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .history-list li {
@@ -32,13 +56,15 @@
     padding: 0.5rem;
 }
 
-.history-list-heading, .history-list-row1 {
+.history-list-heading,
+.history-list-row1 {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
 
-.history-list-heading p, .history-list-row1 p {
+.history-list-heading p,
+.history-list-row1 p {
     width: 12rem;
 }
 
@@ -54,14 +80,77 @@
     padding: 0.5rem;
 }
 
-.history-details > svg {
+.history-details>svg {
     background-color: var(--primary-color);
     padding: 0.5rem;
-    border-radius: 50%;
+    border-radius: 45%;
     transition: all 0.5s ease;
 }
 
-.history-details > svg:hover {
+.history-details>svg:hover {
     transform: scale(1.3);
     transition: all 0.5s ease;
+}
+
+.history-comment {
+    padding: 1rem;
+}
+
+.history-comment-edit {
+    display: flex;
+    padding: 0.5rem 2rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    width: max-content;
+}
+
+.history-comment-edit:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.3s ease;
+    background-color: var(--primary-color);
+}
+
+.history-comment-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.history-comment-message textarea{
+    margin-top: 1rem;
+    border: 1px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: 10px;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.history-comment-message textarea:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.history-comment-message-button {
+    border: none;
+    background-color: var(--primary-color);
+    padding: 0.5rem 2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    width: 40%;
+}
+
+.history-comment-message-button:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: all 0.3s ease;
+}
+
+.history-comment-message p {
+    color: gray;
 }

@@ -3,53 +3,95 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HistoryContentComponent } from '../history-content/history-content.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CommonModule, HistoryContentComponent],
+  imports: [CommonModule, HistoryContentComponent, FormsModule],
   templateUrl: './history.component.html',
   styleUrl: './history.component.css',
 })
 export class HistoryComponent {
 
-  message = 'Loading the history...'
-  predictionList: DataOutput[] = []
+  message = 'Loading the your details and history...'
+  historyList: DataOutput[] = []
   isLoaded = false
+  patientId = ''
+  patientData:Patient = new Patient()
+
+  userToken: any
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Accept': "Application/json",
+      "Content-Type": "Application/json"
+    })
+  }
 
   constructor(private http: HttpClient, private router: Router) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Accept': "Application/json",
-        "Content-Type": "Application/json"
-      })
-    }
+    
+    this.userToken = localStorage.getItem('userToken')
+    this.getData()
+  }
 
-    const userId = localStorage.getItem('userId')
-
-    if (userId) {
-      this.http.post('http://127.0.0.1:5000/history', { userId }, httpOptions).subscribe((res: any) => {
+  getData() {
+    
+    if (this.userToken) {
+      this.http.post('http://127.0.0.1:5000/history', { userToken: this.userToken }, this.httpOptions).subscribe((res: any) => {
 
         if (res.status !== 200) {
           this.message = res.error
         } else {
           this.message = ''
-          this.predictionList = res.predictionList
+          this.historyList = res.historyList
+          this.patientData = res.patientData
           this.isLoaded = true
         }
       })
     }
   }
 
-
   onExtend = (index: number) => {
-    this.predictionList[index].isExtended = true
+    this.historyList[index].isExtended = true
   }
 
   onCompact = (index: number) => {
-    this.predictionList[index].isExtended = false
+    this.historyList[index].isExtended = false
   }
+  
+  getAgeFromDOB(dob: string): number {
+    // Convert DOB string to Date object
+    const dobDate = new Date(dob);
+
+    // Get current date
+    const currentDate = new Date();
+
+    // Calculate age
+    let age = currentDate.getFullYear() - dobDate.getFullYear();
+
+    // Check if birthday has occurred this year
+    const currentMonth = currentDate.getMonth();
+    const dobMonth = dobDate.getMonth();
+
+    if (currentMonth < dobMonth || (currentMonth === dobMonth && currentDate.getDate() < dobDate.getDate())) {
+      age--; // Subtract 1 if birthday hasn't occurred yet
+    }
+
+    return age;
+  }
+
 }
+
+class Patient {
+  username = ''
+  role = ''
+  status = ''
+  gender = ''
+  dob = ''
+  dateOfJoining = ''
+  _id = ''
+}
+
 
 class DataOutput {
   image: { name: string, photoUrl: string }
@@ -71,6 +113,13 @@ class DataOutput {
   resultScore: DataOutputScore = new DataOutputScore()
   isExtended = false
   _id = ''
+  consultedBy = ''
+  lastEditedByUsername = ''
+  lastEditedOn = ''
+  comment = ''
+  isCommentPresent = false
+  commentId = ''
+  commentMessage = ''
 
   constructor() {
     this.image = { name: '', photoUrl: '' }
@@ -138,4 +187,3 @@ export class DataOutputScore {
     this.output = { message: '', score: 0 }
   }
 }
-

@@ -370,6 +370,11 @@ input[type=number] {
   color: var(--secondary-color);
 }
 
+#imageCanvas {
+  width: 700px;
+  height: 700px;
+}
+
 .image-canvas-output {
   width: 20rem;
 }
