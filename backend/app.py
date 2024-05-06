@@ -455,7 +455,7 @@ def checkUser():
         return jsonify({'message': 'Successfull', 'userToken': userToken, 'userRole': user['role'], "status": 200})
     except Exception as e:
         print('CheckUser e: ', str(e))
-        return jsonify({'error': 'Something went wrong', "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 #SignUp Route
 @app.route('/signup', methods=['POST'])
@@ -496,7 +496,7 @@ def signup():
         return jsonify({'message': 'User created successfully', 'userId': str(inserted_id), "status": 200})
     except Exception as e:
         print(f"Error handling signup request: {e}")
-        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 # Login route
 @app.route('/login', methods=['POST'])
@@ -522,7 +522,7 @@ def login():
         return jsonify({'message': 'Login successful', 'userToken': str(userToken), 'userRole': user['role'], "status": 200})
     except Exception as e:
         print(f"Error handling login request: {e}")
-        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -603,7 +603,7 @@ def predict():
 
     except Exception as e:
         print(f"Error handling prediction request: {e}")
-        return jsonify({"error": "An internal error occurred, Please check the type of image and try again...", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/history", methods=["POST"])
 def history():
@@ -650,7 +650,7 @@ def history():
 
     except Exception as e:
         print(f"Error handling history request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/users", methods=["POST"])
 def users():
@@ -691,7 +691,7 @@ def users():
 
     except Exception as e:
         print(f"Error handling users request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/approvedoctor", methods=["POST"])
 def approvedoctor():
@@ -723,7 +723,7 @@ def approvedoctor():
 
     except Exception as e:
         print(f"Error handling approvedoctor request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/patients", methods=["POST"])
 def patients():
@@ -763,7 +763,7 @@ def patients():
 
     except Exception as e:
         print(f"Error handling patients request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/getpatients", methods=["POST"])
 def getPatients():
@@ -805,7 +805,7 @@ def getPatients():
 
     except Exception as e:
         print(f"Error handling getpatients request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/getpatientdetails", methods=["POST"])
 def getPatientDetails():
@@ -856,7 +856,7 @@ def getPatientDetails():
 
     except Exception as e:
         print(f"Error handling getpatientdetails request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/addcomment", methods=["POST"])
 def addComment():
@@ -908,7 +908,7 @@ def addComment():
 
     except Exception as e:
         print(f"Error handling addcomment request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
 @app.route("/updatecomment", methods=["POST"])
 def updateComment():
@@ -961,7 +961,7 @@ def updateComment():
 
     except Exception as e:
         print(f"Error handling updatecomment request: {e}")
-        return jsonify({"error": "Something went wrong", "status": 500})
+        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
     
 if __name__ == "__main__":
     app.run(debug=True)
