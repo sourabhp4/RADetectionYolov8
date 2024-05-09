@@ -42,7 +42,7 @@
                 <p class="username">{{patient.username}}</p>
                 <p>{{patient.gender}}</p>
                 <p>{{getAgeFromDOB(patient.dob)}}</p>
-                <p>{{patient.dateOfJoining}}</p>
+                <p>{{patient.dateOfJoining.split('GMT')[0]}}</p>
                 <p>{{patient.numRecords}}</p>
             </div>
         </li>

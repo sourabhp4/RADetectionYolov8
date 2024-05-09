@@ -87,7 +87,7 @@
         <p class="username">Username: <b>{{currentPatient.username}}</b></p>
         <p class="gender">Gender: <b>{{currentPatient.gender}}</b></p>
         <p class="age">Age: <b>{{getAgeFromDOB(currentPatient.dob)}}</b></p>
-        <p>Date of Registration: <b>{{currentPatient.dateOfJoining}}</b></p>
+        <p>Date of Registration: <b>{{currentPatient.dateOfJoining.split('GMT')[0]}}</b></p>
         <p>Past Records: <b>{{currentPatient.numRecords}}</b></p>
         <p class="patient-history-link" (click)="onPatientHistory(currentPatient._id)">Patient History</p>
       </div>

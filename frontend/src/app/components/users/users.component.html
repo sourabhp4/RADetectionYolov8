@@ -22,7 +22,7 @@
             <div class="users-list-row1">
                 <p class="slNo">{{i + 1}}</p>
                 <p class="username">{{user.username}}</p>
-                <p >{{user.dateOfJoining}}</p>
+                <p >{{user.dateOfJoining.split('GMT')[0]}}</p>
                 <p >{{user.numRecords}}</p>
                 <p class="approveRole" *ngIf="presentRole === 'doctor'">
                     <span *ngIf="user.status === 'approved'">Approved</span>

@@ -21,7 +21,7 @@
             <p>Username: <span>{{patientData.username}}</span></p>
             <p>Gender: <span>{{patientData.gender}}</span></p>
             <p>Age: <span>{{getAgeFromDOB(patientData.dob)}}</span></p>
-            <p>Date of Registration: <span>{{patientData.dateOfJoining}}</span></p>
+            <p>Date of Registration: <span>{{patientData.dateOfJoining.split('GMT')[0]}}</span></p>
         </div>
     </div>
     <h3 *ngIf="isLoaded && historyList.length === 0">No Data Found, Past Records will be available here...</h3>
@@ -37,7 +37,7 @@
             <div class="patient-list-row1">
                 <p>{{i + 1}}</p>
                 <p>{{prediction.consultedBy}}</p>
-                <p>{{prediction.date}}</p>
+                <p>{{prediction.date.split('GMT')[0]}}</p>
                 <p><img src={{prediction.image.photoUrl}} alt="image" height="75" width="75"></p>
                 <p (click)="onExtend(i)" *ngIf="!prediction.isExtended" class="patient-details">
                     <svg fill="#000000" height="20px" width="20px" version="1.1" id="Layer_1"
@@ -88,7 +88,7 @@
                 <form *ngIf="prediction.isCommentPresent" (submit)="onUpdateCommentSubmit($event, i)"
                     class="patient-comment-message">
                     <p>Last Edited by: <b>{{prediction.lastEditedByUsername}}</b></p>
-                    <p>Last Edited on: <b>{{prediction.lastEditedOn}}</b></p>
+                    <p>Last Edited on: <b>{{prediction.lastEditedOn.split('GMT')[0]}}</b></p>
                     <button class="patient-comment-edit" *ngIf="!prediction.isCommentEditable"
                         (click)="onEditPress(i)">
                         <svg class="feather feather-edit" fill="none" height="24" stroke="currentColor"
