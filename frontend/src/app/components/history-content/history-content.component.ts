@@ -10,7 +10,7 @@ import Konva from 'konva';
   styleUrl: './history-content.component.css',
 })
 export class HistoryContentComponent implements OnInit {
-  @Input() prediction!: DataOutput 
+  @Input() prediction!: DataOutput
 
   currentImageClass = ''
   currentImageClassConf = 0.0
@@ -18,7 +18,7 @@ export class HistoryContentComponent implements OnInit {
   konvaObject: any
   scale = 1
 
-  constructor () {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -173,26 +173,28 @@ const drawPredictions = (imagePredictions: DataOutputImagePrediction[], imageUrl
     })
     layer.add(image)
 
-    // Create rectangles
-    imagePredictions.forEach((prediction) => {
-      let boxColor = 'green'
-      if (prediction.class.endsWith('1'))
-        boxColor = 'red'
+    if (imagePredictions.length > 5) {
+      // Create rectangles
+      imagePredictions.forEach((prediction) => {
+        let boxColor = 'green'
+        if (prediction.class.endsWith('1'))
+          boxColor = 'red'
 
-      if (rectType === 'positive' && prediction.class.endsWith('0'))
-        return
-      if (rectType === 'negative' && prediction.class.endsWith('1'))
-        return
-      let rect = new Konva.Rect({
-        x: prediction.x1 + 30,
-        y: prediction.y1 + 30,
-        width: prediction.x2 - prediction.x1,
-        height: prediction.y2 - prediction.y1,
-        stroke: boxColor,
-        strokeWidth: 2
+        if (rectType === 'positive' && prediction.class.endsWith('0'))
+          return
+        if (rectType === 'negative' && prediction.class.endsWith('1'))
+          return
+        let rect = new Konva.Rect({
+          x: prediction.x1 + 30,
+          y: prediction.y1 + 30,
+          width: prediction.x2 - prediction.x1,
+          height: prediction.y2 - prediction.y1,
+          stroke: boxColor,
+          strokeWidth: 2
+        })
+        layer.add(rect)
       })
-      layer.add(rect)
-    })
+    }
 
     layer.draw()
   }
