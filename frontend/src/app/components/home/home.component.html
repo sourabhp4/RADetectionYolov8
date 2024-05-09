@@ -17,7 +17,7 @@
     </button>
   </section>
 
-  <section id="get-started">
+  <section id="get-started" *ngIf="role === 'doctor'">
     <h1 class="get-started-heading">Try out the system</h1>
     <button class="get-started-button"><a href="/form">Get Started</a></button>
   </section>

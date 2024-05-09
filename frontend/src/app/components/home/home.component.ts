@@ -19,7 +19,11 @@ export class HomeComponent implements OnInit {
   timer: any
   carouselImage: any = null
 
-  constructor() { }
+  role = ''
+
+  constructor() { 
+    this.role = localStorage.getItem('role') || ''
+  }
 
   ngOnInit() { }
 
