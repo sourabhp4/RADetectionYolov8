@@ -842,10 +842,6 @@ def getPatientDetails():
             comment = comments_collection.find_one({ 'predictionId': str(history['_id']) })
             if comment:
                 history['comment'] = comment['comment']
-                history['lastEditedByUsername'] = comment['lastEditedByUsername']
-                history['lastEditedById'] = comment['lastEditedById']
-                history['lastEditedOn'] = comment['lastEditedOn']
-                history['commentId'] = str(comment['_id'])
                 history['isCommentPresent'] = True
             else:
                 history['isCommentPresent'] = False
@@ -893,75 +889,95 @@ def addComment():
 
         pastComment = comments_collection.find_one({'predictionId': req_data.get('predictionId')})
         if pastComment:
-            return jsonify({'error': 'Already comment exists', "status": 400})
-        
-        comment = {}
-        comment['predictionId'] = str(req_data['predictionId'])
-        comment['comment'] = req_data['comment']
-        comment['lastEditedByUsername'] = doctor['username']
-        comment['lastEditedById'] = str(doctor['_id'])
-        comment['lastEditedOn'] = datetime.now()
-        
-        comments_collection.insert_one(comment)
+            comment = {}
+            comment['message'] = req_data['comment']
+            comment['username'] = doctor['username']
+            comment['id'] = str(doctor['_id'])
+            comment['on'] = datetime.now()
 
-        return jsonify({"message": 'success', "status": 200})
+            updated_comments = pastComment.get('comment', [])
+            updated_comments.append(comment)
+
+            result = comments_collection.update_one(
+                {'predictionId': req_data.get('predictionId')}, 
+                {'$set': {'comment': updated_comments}}
+            )
+            
+            if result.modified_count == 1:
+                return jsonify({'message': 'Success', 'status': 200})
+            else:
+                return jsonify({'error': 'Failed to add comment, Please try again later', 'status': 500})
+        
+        else:
+            mainComment = {}
+            mainComment['predictionId'] = str(req_data['predictionId'])
+            comment = {}
+            comment['message'] = req_data['comment']
+            comment['username'] = doctor['username']
+            comment['id'] = str(doctor['_id'])
+            comment['on'] = datetime.now()
+            mainComment['comment'] = [comment]
+        
+            comments_collection.insert_one(mainComment)
+
+            return jsonify({"message": 'success', "status": 200})
 
     except Exception as e:
         print(f"Error handling addcomment request: {e}")
         return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
 
-@app.route("/updatecomment", methods=["POST"])
-def updateComment():
-    try:
-        req_data = request.json
-        if not req_data.get('userToken'):
-            return jsonify({'error': 'Do SignIn', "status": 401})
+# @app.route("/updatecomment", methods=["POST"])
+# def updateComment():
+#     try:
+#         req_data = request.json
+#         if not req_data.get('userToken'):
+#             return jsonify({'error': 'Do SignIn', "status": 401})
         
-        data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
+#         data = jwt.decode(req_data.get('userToken'), os.environ.get('SECRET_KEY'), algorithms=["HS256"])
 
-        # Check if the expiration time is in the past
-        if "exp" in data:
-            exp_datetime = datetime.fromtimestamp(data["exp"])
-            if exp_datetime < datetime.utcnow():
-                return jsonify({'error': 'Expired Token', "status": 401})
-        else:
-            return jsonify({'error': 'Unauthorized', "status": 401})
+#         # Check if the expiration time is in the past
+#         if "exp" in data:
+#             exp_datetime = datetime.fromtimestamp(data["exp"])
+#             if exp_datetime < datetime.utcnow():
+#                 return jsonify({'error': 'Expired Token', "status": 401})
+#         else:
+#             return jsonify({'error': 'Unauthorized', "status": 401})
         
-        doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
+#         doctor = users_collection.find_one({'_id': ObjectId(data['userId']), 'role': 'doctor'}, { 'password': 0 })
 
-        if not doctor:
-            return jsonify({'error': 'Unauthorized', "status": 401})
+#         if not doctor:
+#             return jsonify({'error': 'Unauthorized', "status": 401})
         
-        if not req_data['comment']:
-            return jsonify({'error': 'Comment is required', "status": 400})
+#         if not req_data['comment']:
+#             return jsonify({'error': 'Comment is required', "status": 400})
         
-        if not req_data['predictionId']:
-            return jsonify({'error': 'Insufficient request', "status": 400})
+#         if not req_data['predictionId']:
+#             return jsonify({'error': 'Insufficient request', "status": 400})
         
-        prediction = predictions_collection.find_one({'_id': ObjectId(req_data.get('predictionId'))})
+#         prediction = predictions_collection.find_one({'_id': ObjectId(req_data.get('predictionId'))})
 
-        if not prediction:
-            return jsonify({'error': 'Bad Request', "status": 400})
+#         if not prediction:
+#             return jsonify({'error': 'Bad Request', "status": 400})
 
-        pastComment = comments_collection.find_one({'predictionId': req_data.get('predictionId')})
-        if not pastComment:
-            return jsonify({'error': 'Comment does not exists to update', "status": 400})
+#         pastComment = comments_collection.find_one({'predictionId': req_data.get('predictionId')})
+#         if not pastComment:
+#             return jsonify({'error': 'Comment does not exists to update', "status": 400})
         
-        result = comments_collection.update_one({'_id': ObjectId(req_data['commentId'])}, 
-                                                {'$set': {
-                                                    'comment': req_data['comment'],
-                                                    'lastEditedByUsername': doctor['username'],
-                                                    'lastEditedById': data['userId'],
-                                                    'lastEditedOn': datetime.now()
-                                                    }})
-        if result.modified_count == 1:
-            return jsonify({'message': 'Success', 'status': 200})
-        else:
-            return jsonify({'error': 'Failed to update comment, Please try again later', 'status': 500})
+#         result = comments_collection.update_one({'_id': ObjectId(req_data['commentId'])}, 
+#                                                 {'$set': {
+#                                                     'comment': req_data['comment'],
+#                                                     'lastEditedByUsername': doctor['username'],
+#                                                     'lastEditedById': data['userId'],
+#                                                     'lastEditedOn': datetime.now()
+#                                                     }})
+#         if result.modified_count == 1:
+#             return jsonify({'message': 'Success', 'status': 200})
+#         else:
+#             return jsonify({'error': 'Failed to update comment, Please try again later', 'status': 500})
 
-    except Exception as e:
-        print(f"Error handling updatecomment request: {e}")
-        return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
+#     except Exception as e:
+#         print(f"Error handling updatecomment request: {e}")
+#         return jsonify({'error': 'Something went wrong, Please try again later...', "status": 500})
     
 if __name__ == "__main__":
     app.run(debug=True)
