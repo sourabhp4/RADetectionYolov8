@@ -92,7 +92,7 @@ export class PatientComponent implements OnInit {
     this.historyList[i].commentMessage = 'Processing the request...'
 
     if (this.userToken) {
-      this.http.post('http://127.0.0.1:5000/addcomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].comment }, this.httpOptions).subscribe((res: any) => {
+      this.http.post('http://127.0.0.1:5000/addcomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].newComment }, this.httpOptions).subscribe((res: any) => {
         if (res.status !== 200) {
           this.historyList[i].commentMessage = res.error
         } else {
@@ -105,32 +105,24 @@ export class PatientComponent implements OnInit {
     }
   }
 
-  onUpdateCommentSubmit (event:any, i: number) {
-    event?.preventDefault()
+  // onUpdateCommentSubmit (event:any, i: number) {
+  //   event?.preventDefault()
 
-    this.historyList[i].commentMessage = 'Processing the request...'
+  //   this.historyList[i].commentMessage = 'Processing the request...'
 
-    if (this.userToken) {
-      this.http.post('http://127.0.0.1:5000/updatecomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].comment, commentId: this.historyList[i].commentId }, this.httpOptions).subscribe((res: any) => {
-        if (res.status !== 200) {
-          this.historyList[i].commentMessage = res.error
-        } else {
-          this.historyList[i].commentMessage = 'Successfully updated comment. Fetching updated records...'
-          setTimeout(() => {
-            this.getData(this.patientId)
-          }, 1000)
-        }
-      })
-    }
-  }
-
-  onEditPress (i: number) {
-    this.historyList[i].isCommentEditable = true
-  }
-
-  onCancelPress (i: number) {
-    this.historyList[i].isCommentEditable = false
-  }
+  //   if (this.userToken) {
+  //     this.http.post('http://127.0.0.1:5000/updatecomment', { userToken: this.userToken, predictionId: this.historyList[i]._id, comment: this.historyList[i].comment}, this.httpOptions).subscribe((res: any) => {
+  //       if (res.status !== 200) {
+  //         this.historyList[i].commentMessage = res.error
+  //       } else {
+  //         this.historyList[i].commentMessage = 'Successfully updated comment. Fetching updated records...'
+  //         setTimeout(() => {
+  //           this.getData(this.patientId)
+  //         }, 1000)
+  //       }
+  //     })
+  //   }
+  // }
 }
 
 class Patient {
@@ -165,13 +157,15 @@ class DataOutput {
   isExtended = false
   _id = ''
   consultedBy = ''
-  lastEditedByUsername = ''
-  lastEditedOn = ''
-  comment = ''
+  comment: [{
+    on: string,
+    username: string,
+    id: string,
+    message: string
+  }]
   isCommentPresent = false
-  commentId = ''
   commentMessage = ''
-  isCommentEditable = false
+  newComment = ''
 
   constructor() {
     this.image = { name: '', photoUrl: '' }
@@ -188,6 +182,7 @@ class DataOutput {
     this.affectDuration = 0
     this.patientId = ''
     this.userId = ''
+    this.comment = [{ on: '', username: '', id: '', message: '' }]
   }
 }
 

@@ -96,7 +96,42 @@
     padding: 1rem;
 }
 
-.patient-comment-edit {
+.patient-comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 1rem;
+    text-align: center;
+    justify-content: center;
+    padding: 1rem 0rem;
+}
+
+.patient-comment-list-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patient-comment-list-row-message {
+    border-radius: 0.5rem;
+    background-color: white;
+    outline: 1px solid var(--primary-color);
+    padding: 1rem;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.patient-comment-list-row-e2 {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--secondary-color);
+}
+
+
+
+/* .patient-comment-edit {
     display: flex;
     padding: 0.5rem 2rem;
     border: 1px solid var(--primary-color);
@@ -113,7 +148,7 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     transition: all 0.3s ease;
     background-color: var(--primary-color);
-}
+} */
 
 .patient-comment-message {
     display: flex;
