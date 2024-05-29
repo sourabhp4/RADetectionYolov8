@@ -114,9 +114,12 @@ class DataOutput {
   isExtended = false
   _id = ''
   consultedBy = ''
-  lastEditedByUsername = ''
-  lastEditedOn = ''
-  comment = ''
+  comment: [{
+    on: string,
+    username: string,
+    id: string,
+    message: string
+  }]
   isCommentPresent = false
   commentId = ''
   commentMessage = ''
@@ -136,6 +139,7 @@ class DataOutput {
     this.affectDuration = 0
     this.patientId = ''
     this.userId = ''
+    this.comment = [{ on: '', username: '', id: '', message: '' }]
   }
 }
 

@@ -636,10 +636,6 @@ def history():
             comment = comments_collection.find_one({ 'predictionId': str(history['_id']) })
             if comment:
                 history['comment'] = comment['comment']
-                history['lastEditedByUsername'] = comment['lastEditedByUsername']
-                history['lastEditedById'] = comment['lastEditedById']
-                history['lastEditedOn'] = comment['lastEditedOn']
-                history['commentId'] = str(comment['_id'])
                 history['isCommentPresent'] = True
             else:
                 history['isCommentPresent'] = False

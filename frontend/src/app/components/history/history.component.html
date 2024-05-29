@@ -79,13 +79,16 @@
             <div class="history-comment" *ngIf="prediction.isExtended">
                 <h3>COMMENT</h3>
                 
-                <div *ngIf="prediction.isCommentPresent"
-                    class="history-comment-message">
-                    <p>Last Edited by: <b>{{prediction.lastEditedByUsername}}</b></p>
-                    <p>Last Edited on: <b>{{prediction.lastEditedOn.split('GMT')[0]}}</b></p>
-                    <textarea name="comment" id="comment2" cols="80" rows="10" required
-                        [value]="prediction.comment" readonly></textarea>
-                </div>
+                <ul *ngIf="prediction.isCommentPresent" class="history-comment-list">
+                    <li *ngFor="let comment of prediction.comment; index as i;" class="history-comment-list-row">
+                        <textarea class="history-comment-list-row-message" readonly rows="5">{{comment.message}}</textarea>
+                        <div class="history-comment-list-row-e2">
+                            <span>{{comment.username}}</span>
+                            <span>|</span>
+                            <span>{{comment.on.split('GMT')[0]}}</span>
+                        </div>
+                    </li>
+                </ul>
                 <div *ngIf="!prediction.isCommentPresent"
                     class="history-comment-message">
                     <p>No comment found</p>
