@@ -40,6 +40,7 @@ export class FormComponent {
   isLoaded = false
   currentUsername = ''
   currentPatient: Patient = new Patient()
+  maxWeeks: number = 0;
   patientListMessage = ''
 
   imagePredictions: DataOutputImagePrediction[] = []
@@ -88,11 +89,20 @@ export class FormComponent {
     this.currentPatient = patient
     this.currentUsername = ''
     this.isLoaded = false
+    this.calculateMaxWeeks(patient.dob);
+    console.log(patient)
+  }
+
+  calculateMaxWeeks(dob:string): void {
+    const dobDate = new Date(dob);
+    const currentDate = new Date();
+    const timeDifference = currentDate.getTime() - dobDate.getTime();
+    this.maxWeeks = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7));
   }
 
   onSubmit(event: any) {
     event.preventDefault()
-
+    
     if (!this.dataInputObj.isAnticcpPresent && !this.dataInputObj.isRfPresent && !this.dataInputObj.isCrpPresent && !this.dataInputObj.isEsrPresent) {
       this.message = 'The Accuracy of final prediction depends on the input of all categories'
     } else {
