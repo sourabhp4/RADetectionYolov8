@@ -80,7 +80,8 @@
       <div class="form-content-element-row1">
         <h2 class="form-content-element-heading">Patient Unique Identity</h2>
         <label for="patientUsername" class="">Enter patient username and select from list</label>
-        <input type="text" id="patientUsername" name="patientUsername" [(ngModel)]="currentUsername" (input)="onUsernameChange($event)">
+        <input type="text" id="patientUsername" name="patientUsername" [(ngModel)]="currentUsername"
+          (input)="onUsernameChange($event)">
       </div>
       <div class="form-content-element-row1" *ngIf="currentPatient.username !== ''">
         <h2 class="form-content-element-heading">Selected Patient:</h2>
@@ -138,7 +139,7 @@
       <div class="form-content-element-row">
         <label for="affectDuration" class="">Duration of Symptoms (In Weeks)</label>
         <input type="number" id="affectDuration" name="affectDuration" [(ngModel)]="dataInputObj.affectDuration"
-          class="">
+          class="" min="0" [max]="maxWeeks">
       </div>
 
       <h3 class="form-heading3">Select the Serology Types</h3>
