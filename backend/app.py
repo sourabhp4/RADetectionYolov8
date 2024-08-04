@@ -88,7 +88,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuration for MongoDB connection
-client = MongoClient(os.environ.get('MONGO_URI_CLUSTER'))
+client = MongoClient(os.environ.get('MONGO_URI_LOCAL'))
 db = client['godproject']
 users_collection = db['users']
 predictions_collection = db['predictions']
